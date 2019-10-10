@@ -1,22 +1,19 @@
-FROM ruby:2.4.1
+FROM ruby:2.4.0
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev
+ENV APP /app
+RUN apt-get update -qq && \
+    apt-get install -y build-essential libpq-dev nodejs npm apt-transport-https && \
+    npm install -g n && \
+    n stable && \
+    ln -s /usr/bin/nodejs /usr/bin/node && \
+    mkdir $APP
 
-# Node.js
-RUN curl -sL https://deb.nodesource.com/setup_7.x | bash - \
-&& apt-get install -y nodejs
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update -qq && \
+    apt-get install -y yarn
 
-RUN apt-get update && apt-get install -y curl apt-transport-https wget && \
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-apt-get update && apt-get install -y yarn
-
-RUN mkdir /fancyapp
-WORKDIR /fancyapp
-
-ADD Gemfile /fancyapp/Gemfile
-ADD Gemfile.lock /fancyapp/Gemfile.lock
-
+WORKDIR $APP
+COPY Gemfile* $APP/
 RUN bundle install
-
-ADD . /fancyap
+COPY . $APP
