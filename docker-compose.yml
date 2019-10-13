@@ -1,0 +1,42 @@
+version: '3'
+services:
+  db:
+    build:
+      context: '.'
+      dockerfile: './postgres/Dockerfile'
+    ports:
+      - '5432-5432'
+    networks: 
+      - 'yellowPages'
+    volumes:
+      - 'data'
+  ruby:
+    build:
+      context: '.'
+      dockerfile: './ruby/Dockerfile'
+    ports:
+      - '3000:3000'
+    networks: 
+      - 'yellowPages'
+    depends_on:
+      - 'db'
+    volumes:
+      - './ruby/myapp/:/home/ruby/myapp'  
+  vue:
+    build:
+      context: '.'
+      dockerfile: './vue/Dockerfile'
+    ports:
+      - '8080:8080'
+    networks: 
+      - 'yellowPages'
+    depends_on:
+      - 'ruby'
+    volumes:
+      - './vue/myapp/:/home/vue'
+
+volumes:
+  data: {}
+
+networks: 
+  yellowPages:
