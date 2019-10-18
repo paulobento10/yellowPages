@@ -3,4 +3,4 @@ RUN npm install
 RUN npm install vue axios @vue/cli
 WORKDIR /home/vue/
 #RUN vue create myapp
-CMD npm run serve
+CMD npm install && npm run serve
