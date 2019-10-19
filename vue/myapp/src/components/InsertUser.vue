@@ -3,7 +3,7 @@
     <fieldset class="border border-dark">
       <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Inserir Nova Empresa</legend>
       <div class="mt-2 col-md-12">
-
+        
         <b-form id="app" @submit="checkForm" action="http://localhost:3000/users" method="post">
           <p v-if="errors.length">
             <b>Please correct the following error(s):</b>
