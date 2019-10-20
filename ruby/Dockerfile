@@ -10,7 +10,12 @@ COPY ./ruby/entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 
+#RUN rake db:drop db:create db:migrate
+
 # Start the main process.
-CMD rails server -b 0.0.0.0
+#CMD rails server -b 0.0.0.0
+CMD rake db:migrate & rails server -b 0.0.0.0
+
+
 #CMD bundle exec rails s -p 3000 -b 0.0.0.0
 #-b 0.0.0.0
