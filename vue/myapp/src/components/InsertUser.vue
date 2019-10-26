@@ -4,7 +4,7 @@
       <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Inserir Nova Empresa</legend>
       <div class="mt-2 col-md-12">
         
-        <b-form id="app" @submit="checkForm" action="http://localhost:3000/users" method="post">
+        <b-form form id="app" @submit="postPost" method="postPost"> <!--<b-form id="app" @submit="postPost" method="postPost" action="http://localhost:3000/users">          action="http://localhost:3000/users"-->
           <p v-if="errors.length">
             <b>Please correct the following error(s):</b>
             <ul>
@@ -77,7 +77,7 @@
           <b-button type="reset" variant="danger" class="btn-lg" style="float: right">Reset</b-button>
           <b-button type="submit" variant="primary" class="btn-lg" style="float: right">Criar</b-button>
           
-        </b-form>
+        </b-form> <!-- </b-form> -->
         <p><br><br></p>
       </div>
     </fieldset>
@@ -88,36 +88,51 @@
 import axios from 'axios';
 
 export default {
+  mounted() {
+    console.log('Component mounted.')
+  },
   data() {
     return {
-      name: '',
-      phoneNumber: '',
-      address: '',
-      postalCode: '',
-      local: '',
-      errors: [],
+        name: '',
+        phoneNumber: '',
+        address: '',
+        postalCode: '',
+        local: '',
+        errors: [],
     }
   },
+  methods:{
+    // Pushes posts to the server when called.
+    postPost(e) {
+      e.preventDefault();
+      let self = this;
 
-  // Pushes posts to the server when called.
-postPost() {
-  axios.post('http://localhost:3000/users',
-   {headers: {'Content-Type': 'application/json'}},
-   {body: {"name":this.name,"phoneNumber":this.phoneNumber,"address":this.address,"postalCode":this.postalCode,"local":this.local}})
-  .then(response => {})
-  .catch(e => {
-    this.errors.push(e)
-  })
-}
-
-  /*postPost() {
-    axios.post('http://localhost:3000/users', {
-      body:{"name":""+this.name,"phoneNumber":""+this.phoneNumber,"address":""+this.address,"postalCode":""+this.postalCode,"local":""+this.local}
-    })
-    .then(response => {})
-    .catch(e => {
-      this.errors.push(e)
-    })
-  }*/
+      axios.post('http://localhost:3000/users', 
+          {
+            name: this.name,
+            phoneNumber: this.phoneNumber,
+            address: this.address,
+            postalCode: this.postalCode,
+            local: this.local
+          },
+          {
+            headers: {'Content-Type': 'application/json'}
+          },
+        )
+      .then(function(response){ //response => {}
+            //console.log(this.name);
+            console.log(response);
+            
+            const status = JSON.parse(response.status);
+              if (status == '201') {
+                self.$router.push('show');
+              }
+          }
+        )
+      .catch(e => {
+        this.errors.push(e)
+      })
+    }
+  }
 }
 </script>

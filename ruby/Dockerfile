@@ -14,8 +14,10 @@ ENTRYPOINT ["entrypoint.sh"]
 
 # Start the main process.
 #CMD rails server -b 0.0.0.0
-CMD rake db:migrate & rails server -b 0.0.0.0
-
+#CMD rake db:migrate & rails server -b 0.0.0.0
+COPY ./ruby/open_terminal.sh /usr/bin/
+RUN chmod +x /usr/bin/open_terminal.sh
+CMD open_terminal.sh & rails server -b 0.0.0.0
 
 #CMD bundle exec rails s -p 3000 -b 0.0.0.0
 #-b 0.0.0.0
