@@ -21,6 +21,7 @@
 /public/packs
 /public/packs-test
 /vue/node_modules
+/vue/myapp/package.json
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity

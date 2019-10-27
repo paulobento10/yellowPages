@@ -5,11 +5,29 @@ class UsersController < ApplicationController
   def index
     @users = User.all
 
-    render json: @users
+    render json: @users  
   end
 
   # GET /users/1
   def show
+    render json: @user
+  end
+
+  #GET Users by name
+  def showName
+    @user = User.by_name(params[:name])
+    render json: @user
+  end
+
+  #GET Users by local
+  def showLocal
+    @user = User.by_local(params[:local])
+    render json: @user
+  end
+
+  #GET Users by name and local
+  def showNameLocal
+    @user = User.by_name_local(params[:name,:local])
     render json: @user
   end
 
