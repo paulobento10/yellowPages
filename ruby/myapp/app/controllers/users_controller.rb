@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   def index
     @users = User.all
 
-    render json: @users  
+    render json: @users
   end
 
   # GET /users/1
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 
   #GET Users by name and local
   def showNameLocal
-    @user = User.by_name_local(params[:name,:local])
+    @user = User.by_name_local(params[:name],params[:local])
     render json: @user
   end
 
