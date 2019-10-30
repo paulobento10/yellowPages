@@ -148,7 +148,7 @@ export default {
         //console.log(this.name);
         console.log(response);
 
-        const status = JSON.parse(response.status);
+      const status = JSON.parse(response.status);
         if (status == '204') {
           self.$router.push('insert');
         }
