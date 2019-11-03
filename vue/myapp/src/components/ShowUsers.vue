@@ -8,7 +8,7 @@
     </div>
 
     <div v-for="(user, index) in users" :key="user.id">
-      <p>{{user.name}} my phone number: {{user.phoneNumber}}</p>
+      <p>{{user.name}} my phone number: {{user.phoneNumber}} and counter: {{user.counter}}</p>
     </div>
 
     <div  style="float:right;">
@@ -95,7 +95,20 @@ export default {
       .catch(e => {
         this.errors.push(e)
       })
+      updateCounter(users)
     },
+
+    updateCounter(users){
+      users.counter = users.counter+1;
+      var url = 'http://localhost:3000/users/updateCounter/'+users.id;
+      const body = {counter: user.counter}
+      const api = {'Content-Type': 'application/json'}
+      axios.put(url,
+      body,
+      {headers: api})
+    },
+
+
   }
 }
 </script>

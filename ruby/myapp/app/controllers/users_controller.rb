@@ -51,6 +51,15 @@ class UsersController < ApplicationController
     end
   end
 
+  # PATCH/PUT /users/counter/1
+  def updateCounter
+    if @user.update(params[:id]) 
+      render json: @user.by_updateCounter
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
   # DELETE /users/1
   def destroy
     @user.destroy
@@ -64,6 +73,6 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.permit(:name, :phoneNumber, :address, :postalCode, :local) #.require(:user)
+      params.permit(:name, :phoneNumber, :address, :postalCode, :local, :link, :counter) #.require(:user)
     end
 end

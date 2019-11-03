@@ -84,6 +84,8 @@ export default {
       address: '',
       postalCode: '',
       local: '',
+      link: '',
+      counter: 0,
       errors: [],
       users: [],
     }
@@ -99,7 +101,9 @@ export default {
         phoneNumber: this.phoneNumber,
         address: this.address,
         postalCode: this.postalCode,
-        local: this.local
+        local: this.local,
+        link: this.link,
+        counter: this.counter,
       }, {
         headers: {
           'Content-Type': 'application/json'

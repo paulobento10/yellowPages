@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   get 'users/name/:name', to:'users#showName'
   get 'users/local/:local', to:'users#showLocal'
   get 'users/name/:name/local/:local', to:'users#showNameLocal'
+  put 'users/updateCounter/:id', to: 'users#updateCounter'
 end
