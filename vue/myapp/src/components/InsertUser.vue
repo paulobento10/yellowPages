@@ -54,17 +54,33 @@
       </fieldset>
     </div>
 
-    <div class="course-list-row">
-      <tr v-for="user in users">
-        <td>{{ user.name }}</td>
-        <td>{{ user.phoneNumber }}</td>
-        <td>{{ user.address }}</td>
-        <td>{{ user.postalCode }}</td>
-        <td>{{ user.local }}</td>
-        <td>{{ <a href="#">Edit</a> }}</td> <!-- lINK, ou outra coisa para uma função, que me encaminha com um pedido PUT e o id -->
-        <td> <button id="btn" class="" v-on:click="deleteUser(user.id)">Delete</button> </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
-      </tr>
+    <div style="background:transparent !important" class="jumbotron">
+      <fieldset class="border border-dark">
+        <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Inserir Nova Empresa</legend>
+       
+        <div class="course-list-row">
+          <template>
+          <b-table id="my-table" v-for="user in users" :items="users" :per-page="perPage" :current-page="currentPage" :fields="fields" responsive="sm" head-variant="dark" striped hover bordered>
+           
+           <template  v-slot:cell(deleteUser) >
+            <button id="btn" v-on:click="deleteUser(user.id)"> 
+              Delete
+            </button>
+          </template>
+          
+          </b-table>
+
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="rows"
+            :per-page="perPage"
+            aria-controls="my-table">
+          </b-pagination>
+          </template>
+        </div>
+    </fieldset>
     </div>
+
   </div>
 </template>
 
@@ -77,6 +93,7 @@ export default {
     this.getUsers()
     console.log('Component mounted.')
   },
+
   data() {
     return {
       name: '',
@@ -84,10 +101,20 @@ export default {
       address: '',
       postalCode: '',
       local: '',
+      perPage: 3,
+      currentPage: 1,
+      fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],
       errors: [],
       users: [],
     }
   },
+  
+  computed: {
+    rows() {
+      return this.users.length
+    }
+  },
+
   methods: {
     // Pushes posts to the server when called.
     postPost(e) {
