@@ -16,30 +16,30 @@
 
             <div class="row">
               <div class="col">
-                <b-form-group id="input-group-2" label="Your Name:" label-for="input-2">
+                <b-form-group id="input-group-2" label="Nome:" label-for="input-2">
                   <b-form-input id="name" v-model="name" required name="name" placeholder="Enter name"></b-form-input>
                 </b-form-group>
               </div>
               <div class="col">
-                <b-form-group id="input-group-2" label="Your Phone Number:" label-for="input-2">
+                <b-form-group id="input-group-2" label="Telefone:" label-for="input-2">
                   <b-form-input id="phoneNumber" v-model="phoneNumber" required name="phoneNumber" type="number" placeholder="Enter phone number"></b-form-input>
                 </b-form-group>
               </div>
             </div>
 
-            <b-form-group id="input-group-2" label="Your Address:" label-for="input-2">
+            <b-form-group id="input-group-2" label="Morada:" label-for="input-2">
               <b-form-input id="address" v-model="address" required name="address" placeholder="Enter address"></b-form-input>
             </b-form-group>
 
             <div class="row">
               <div class="col">
-                <b-form-group id="input-group-2" label="Your Local:" label-for="input-2">
+                <b-form-group id="input-group-2" label="Local:" label-for="input-2">
                   <b-form-input id="local" v-model="local" required name="local" placeholder="Enter local"></b-form-input>
                 </b-form-group>
               </div>
 
               <div class="col">
-                <b-form-group id="input-group-2" label="Your Postal Code:" label-for="input-2">
+                <b-form-group id="input-group-2" label="Código Postal:" label-for="input-2">
                   <b-form-input id="postalCode" v-model="postalCode" required name="postalCode" placeholder="Enter postal code"></b-form-input>
                 </b-form-group>
               </div>
@@ -56,29 +56,47 @@
 
     <div style="background:transparent !important" class="jumbotron">
       <fieldset class="border border-dark">
-        <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Inserir Nova Empresa</legend>
-       
-        <div class="course-list-row">
-          <template>
-          <b-table id="my-table" v-for="user in users" :items="users" :per-page="perPage" :current-page="currentPage" :fields="fields" responsive="sm" head-variant="dark" striped hover bordered>
-           
-           <template  v-slot:cell(deleteUser) >
-            <button id="btn" v-on:click="deleteUser(user.id)"> 
-              Delete
-            </button>
-          </template>
-          
-          </b-table>
+        <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Empresas</legend>
 
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="rows"
-            :per-page="perPage"
-            aria-controls="my-table">
-          </b-pagination>
-          </template>
-        </div>
-    </fieldset>
+        <table id="my-table" class="table table-bordered table-striped" border style="width:100%">
+          <thead>
+            <tr>
+              <th>
+                Nome
+              </th>
+              <th>
+                Morada
+              </th>
+              <th>
+                Código Postal
+              </th>
+              <th>
+                Local
+              </th>
+              <th>
+                Apagar
+              </th>
+              
+            </tr>
+          </thead>
+          <tr id="my-table" v-for="user in users" >
+            <td>{{ user.name }}</td>
+            <!--<td>{{ user.phoneNumber }}</td> -->
+            <td>{{ user.address }}</td>
+            <td>{{ user.postalCode }}</td>
+            <td>{{ user.local }}</td>
+            <!--<td> <a href="#">Edit</a> </td>  lINK, ou outra coisa para uma função, que me encaminha com um pedido PUT e o id -->
+            <td> <button id="btn" class="" v-on:click="deleteUser(user.id)">Delete</button> </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
+          </tr>
+        </table>
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="rows"
+          :per-page="perPage"
+          aria-controls="my-table">
+        </b-pagination>
+
+      </fieldset>
     </div>
 
   </div>
@@ -90,7 +108,7 @@ import axios from 'axios';
 export default {
   name: 'course-list-row',
   mounted() {
-    this.getUsers()
+    this.getUsers() //(currentPage)
     console.log('Component mounted.')
   },
 
@@ -103,7 +121,7 @@ export default {
       local: '',
       perPage: 3,
       currentPage: 1,
-      fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],
+      //fields: [{ key: 'name', sortable: true}, 'address', 'postalCode', 'local', 'deleteUser'],
       errors: [],
       users: [],
     }
@@ -112,7 +130,7 @@ export default {
   computed: {
     rows() {
       return this.users.length
-    }
+    },
   },
 
   methods: {
@@ -149,6 +167,8 @@ export default {
     //get users to populate the table
     getUsers: function() {
       var self = this
+      /*var offset= of-1
+      const url = 'http://localhost:3000/users/offset'+offset+'/delta/3'*/   //Com offset
       const url = 'http://localhost:3000/users'
       axios.get(url, {
         dataType: 'json',
