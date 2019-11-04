@@ -54,6 +54,8 @@
       </fieldset>
     </div>
 
+    <span style="margin-left:4em">Current Page:{{currentPage}}</span>
+
     <div style="background:transparent !important" class="jumbotron">
       <fieldset class="border border-dark">
         <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Empresas</legend>
@@ -108,7 +110,7 @@ import axios from 'axios';
 export default {
   name: 'course-list-row',
   mounted() {
-    //this.getUsers()
+    this.getUsers()
     this.getUsersOffsetDelta(this.currentPage,this.perPage)
     console.log('Component mounted.')
   },
@@ -121,18 +123,19 @@ export default {
       postalCode: '',
       local: '',
       perPage: 3,
-      currentPage: 0,
+      currentPage: 1,
       fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],   //fields: [{ key: 'name', sortable: true}, 'address', 'postalCode', 'local', 'deleteUser'],
       link: '',
       counter: 0,
       errors: [],
       users: [],
+      allUsers: []
     }
   },
 
   computed: {
     rows() {
-      return this.users.length
+      return this.allUsers.length
     },
   },
 
@@ -186,7 +189,7 @@ export default {
       })
       .then(function(response) {
         console.log(JSON.stringify(response.data))
-        self.users = response.data
+        self.allUsers = response.data
       })
       .catch(function(error) {
         console.log(error)
@@ -195,7 +198,7 @@ export default {
 
     getUsersOffsetDelta: function(offset,delta){
       var self = this
-      const url = 'http://localhost:3000/users/offset/'+offset+'/delta/'+delta
+      const url = 'http://localhost:3000/users/offset/'+(offset-1)+'/delta/'+delta
       console.log('url showOffsetDelta: '+url);
       axios.get(url, {
         dataType: 'json',
