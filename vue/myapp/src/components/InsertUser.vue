@@ -108,7 +108,8 @@ import axios from 'axios';
 export default {
   name: 'course-list-row',
   mounted() {
-    this.getUsers() //(currentPage)
+    //this.getUsers()
+    this.getUsersOffsetDelta(this.currentPage,this.perPage)
     console.log('Component mounted.')
   },
 
@@ -120,13 +121,15 @@ export default {
       postalCode: '',
       local: '',
       perPage: 3,
-      currentPage: 1,
-      //fields: [{ key: 'name', sortable: true}, 'address', 'postalCode', 'local', 'deleteUser'],
+      currentPage: 0,
+      fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],   //fields: [{ key: 'name', sortable: true}, 'address', 'postalCode', 'local', 'deleteUser'],
+      link: '',
+      counter: 0,
       errors: [],
       users: [],
     }
   },
-  
+
   computed: {
     rows() {
       return this.users.length
@@ -144,7 +147,9 @@ export default {
         phoneNumber: this.phoneNumber,
         address: this.address,
         postalCode: this.postalCode,
-        local: this.local
+        local: this.local,
+        link: this.link,
+        counter: this.counter,
       }, {
         headers: {
           'Content-Type': 'application/json'
@@ -170,6 +175,28 @@ export default {
       /*var offset= of-1
       const url = 'http://localhost:3000/users/offset'+offset+'/delta/3'*/   //Com offset
       const url = 'http://localhost:3000/users'
+      axios.get(url, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
+      })
+      .then(function(response) {
+        console.log(JSON.stringify(response.data))
+        self.users = response.data
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+    },
+
+    getUsersOffsetDelta: function(offset,delta){
+      var self = this
+      const url = 'http://localhost:3000/users/offset/'+offset+'/delta/'+delta
+      console.log('url showOffsetDelta: '+url);
       axios.get(url, {
         dataType: 'json',
         headers: {
