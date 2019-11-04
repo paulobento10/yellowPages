@@ -8,10 +8,10 @@
     </div>
 
     <div v-for="(user, index) in users" :key="user.id">
-      <p>{{user.name}} my phone number: {{user.phoneNumber}}</p>
+      <p>{{user.name}} my phone number: {{user.phoneNumber}} and counter: {{user.counter}}</p>
     </div>
 
-    <div  style="float:right;">
+    <!--<div  style="float:right;">
       <GmapMap
       :center="{lat:42, lng:-8}"
       :zoom="7"
@@ -27,7 +27,7 @@
       @click="center=m.position"
       />
     </GmapMap>
-  </div>
+  </div>-->
 
 </div>
 </template>
@@ -96,6 +96,13 @@ export default {
         this.errors.push(e)
       })
     },
+
+    updateCounter(id){
+      var url = 'http://localhost:3000/users/updateCounter/'+id;
+      axios.patch(url)
+    },
+
+
   }
 }
 </script>

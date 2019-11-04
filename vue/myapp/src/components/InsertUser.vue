@@ -57,17 +57,17 @@
     <div style="background:transparent !important" class="jumbotron">
       <fieldset class="border border-dark">
         <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Inserir Nova Empresa</legend>
-       
+
         <div class="course-list-row">
           <template>
           <b-table id="my-table" v-for="user in users" :items="users" :per-page="perPage" :current-page="currentPage" :fields="fields" responsive="sm" head-variant="dark" striped hover bordered>
-           
+
            <template  v-slot:cell(deleteUser) >
-            <button id="btn" v-on:click="deleteUser(user.id)"> 
+            <button id="btn" v-on:click="deleteUser(user.id)">
               Delete
             </button>
           </template>
-          
+
           </b-table>
 
           <b-pagination
@@ -90,7 +90,8 @@ import axios from 'axios';
 export default {
   name: 'course-list-row',
   mounted() {
-    this.getUsers()
+    //this.getUsers()
+    this.getUsersOffsetDelta(this.currentPage,this.perPage)
     console.log('Component mounted.')
   },
 
@@ -102,13 +103,15 @@ export default {
       postalCode: '',
       local: '',
       perPage: 3,
-      currentPage: 1,
+      currentPage: 0,
       fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],
+      link: '',
+      counter: 0,
       errors: [],
       users: [],
     }
   },
-  
+
   computed: {
     rows() {
       return this.users.length
@@ -126,7 +129,9 @@ export default {
         phoneNumber: this.phoneNumber,
         address: this.address,
         postalCode: this.postalCode,
-        local: this.local
+        local: this.local,
+        link: this.link,
+        counter: this.counter,
       }, {
         headers: {
           'Content-Type': 'application/json'
@@ -150,6 +155,28 @@ export default {
     getUsers: function() {
       var self = this
       const url = 'http://localhost:3000/users'
+      axios.get(url, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
+      })
+      .then(function(response) {
+        console.log(JSON.stringify(response.data))
+        self.users = response.data
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+    },
+
+    getUsersOffsetDelta: function(offset,delta){
+      var self = this
+      const url = 'http://localhost:3000/users/offset/'+offset+'/delta/'+delta
+      console.log('url showOffsetDelta: '+url);
       axios.get(url, {
         dataType: 'json',
         headers: {

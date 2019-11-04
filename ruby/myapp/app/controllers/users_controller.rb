@@ -31,6 +31,19 @@ class UsersController < ApplicationController
     render json: @user
   end
 
+  #GET Users by delta
+  def showDelta
+    @user = User.offset(0).limit(params[:delta])
+    render json: @user
+  end
+
+  #GET Users by offset & delta
+  def showOffsetDelta
+    offset = Integer(params[:offset]) * Integer(params[:delta])
+    @user = User.offset(offset).limit(params[:delta])
+    render json: @user
+  end
+
   # POST /users
   def create
     @user = User.new(user_params)
@@ -51,6 +64,22 @@ class UsersController < ApplicationController
     end
   end
 
+  # PATCH/PUT /users/counter/1
+  def updateCounter
+    #if @user.update(params[:id])
+    #  render json: @user.increment(:counter,1)
+    #else
+    #  render json: @user.errors, status: :unprocessable_entity
+    #end
+    if @user  = User.find(params[:id])
+      @user.increment(:counter,1)
+      render @user.update(user_params)
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+    #render json: @user
+  end
+
   # DELETE /users/1
   def destroy
     @user.destroy
@@ -64,6 +93,6 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.permit(:name, :phoneNumber, :address, :postalCode, :local) #.require(:user)
+      params.permit(:name, :phoneNumber, :address, :postalCode, :local, :link, :counter) #.require(:user)
     end
 end
