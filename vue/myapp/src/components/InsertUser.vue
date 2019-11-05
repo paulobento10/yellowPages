@@ -54,8 +54,6 @@
       </fieldset>
     </div>
 
-    <span style="margin-left:4em">Current Page:{{currentPage}}</span>
-
     <div style="background:transparent !important" class="jumbotron">
       <fieldset class="border border-dark">
         <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Empresas</legend>
@@ -92,10 +90,13 @@
           </tr>
         </table>
 
-        <div class="container">
-          <ul class="pagination">
-            <li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
-          </ul>
+        <div class="container" v-for="i in Math.ceil(len/3)">
+          <!-- <ul class="pagination" > -->
+            <!--<li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
+            <button style="float:left" id="btnPage" v-on:click="getUsersOffsetDelta(parseInt(i),3);">
+              {{i}}
+            </button>
+          <!--</ul>-->
         </div>
 
         <!--<b-pagination
@@ -221,7 +222,7 @@ export default {
       .then(function(response) {
         console.log(JSON.stringify(response.data))
         self.users = response.data
-        document.getElementById("btnPage").innerHTML = offset
+        //document.getElementById(offset.toString()).innerHTML = offset
       })
       .catch(function(error) {
         console.log(error)
