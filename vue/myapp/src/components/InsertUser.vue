@@ -45,6 +45,11 @@
               </div>
             </div>
 
+
+            <b-form-group id="input-group-2" label="Your Address:" label-for="input-2">
+              <input type='file' name='image'/> 
+            </b-form-group>
+
             <b-button type="reset" variant="danger" class="btn-lg" style="float: right">Reset</b-button>
             <b-button type="submit" variant="primary" class="btn-lg" style="float: right">Criar</b-button>
 

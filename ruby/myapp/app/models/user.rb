@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-    has_attached_file :image
+    has_one_attached :image
     validates :phoneNumber, presence: true, uniqueness: true, length: { is: 9 }
 
     scope :by_name, -> (name) { where(name: name) if name.present? }
