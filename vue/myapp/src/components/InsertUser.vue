@@ -60,7 +60,7 @@
       <fieldset class="border border-dark">
         <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Empresas</legend>
 
-        <table id="my-table" class="table table-bordered table-striped" border style="width:100%">
+        <table id="my-table" class="table table-bordered table-striped table-sm" border style="width:100%">
           <thead>
             <tr>
               <th>
@@ -78,7 +78,7 @@
               <th>
                 Apagar
               </th>
-              
+
             </tr>
           </thead>
           <tr id="my-table" v-for="user in users" >
@@ -91,12 +91,19 @@
             <td> <button id="btn" class="" v-on:click="deleteUser(user.id)">Delete</button> </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
           </tr>
         </table>
-        <b-pagination
+
+        <div class="container">
+          <ul class="pagination">
+            <li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
+          </ul>
+        </div>
+
+        <!--<b-pagination
           v-model="currentPage"
           :total-rows="rows"
           :per-page="perPage"
           aria-controls="my-table">
-        </b-pagination>
+        </b-pagination>-->
 
       </fieldset>
     </div>
@@ -127,6 +134,7 @@ export default {
       fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],   //fields: [{ key: 'name', sortable: true}, 'address', 'postalCode', 'local', 'deleteUser'],
       link: '',
       counter: 0,
+      len: 0,
       errors: [],
       users: [],
       allUsers: []
@@ -190,6 +198,7 @@ export default {
       .then(function(response) {
         console.log(JSON.stringify(response.data))
         self.allUsers = response.data
+        self.len = self.allUsers.length;
       })
       .catch(function(error) {
         console.log(error)
@@ -212,6 +221,7 @@ export default {
       .then(function(response) {
         console.log(JSON.stringify(response.data))
         self.users = response.data
+        document.getElementById("btnPage").innerHTML = offset
       })
       .catch(function(error) {
         console.log(error)
