@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2019_11_05_172308) do
+=======
+ActiveRecord::Schema.define(version: 2019_11_03_155519) do
+>>>>>>> d43462e55b6700e7fd68c3c8b18b63ef1c83d1e3
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,12 +48,16 @@ ActiveRecord::Schema.define(version: 2019_11_05_172308) do
     t.string "local"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "link"
     t.integer "counter"
+<<<<<<< HEAD
     t.string "image_file_name"
     t.string "image_content_type"
     t.integer "image_file_size"
     t.datetime "image_updated_at"
+=======
+    t.string "link"
+    t.string "avatar"
+>>>>>>> d43462e55b6700e7fd68c3c8b18b63ef1c83d1e3
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
