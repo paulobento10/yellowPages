@@ -53,7 +53,6 @@
         </div>
       </fieldset>
     </div>
-
     <div style="background:transparent !important" class="jumbotron">
       <fieldset class="border border-dark">
         <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Empresas</legend>
@@ -76,7 +75,6 @@
               <th>
                 Apagar
               </th>
-
             </tr>
           </thead>
           <tr id="my-table" v-for="user in users" >
@@ -90,22 +88,29 @@
           </tr>
         </table>
 
-        <div class="container" v-for="i in Math.ceil(len/3)">
-          <!-- <ul class="pagination" > -->
-            <!--<li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
-            <button style="float:left" id="btnPage" v-on:click="getUsersOffsetDelta(parseInt(i),3);">
-              {{i}}
-            </button>
-          <!--</ul>-->
+        <div class="container">
+          <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((auxCurrent-1),3);">
+                Anterior
+          </button>
+          <div class="container" v-for="i in Math.ceil(len/3)">
+            <!-- <ul class="pagination" > -->
+              <!--<li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
+              <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(parseInt(i),3);">
+                {{i}}
+              </button>
+            <!--</ul>-->
+          </div>
+          <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((auxCurrent+1),3);">
+                Próxima
+          </button>
         </div>
-
         <!--<b-pagination
           v-model="currentPage"
           :total-rows="rows"
           :per-page="perPage"
           aria-controls="my-table">
         </b-pagination>-->
-
+      <p><br></p>
       </fieldset>
     </div>
 
@@ -132,6 +137,7 @@ export default {
       local: '',
       perPage: 3,
       currentPage: 1,
+      auxCurrent: 2,
       fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],   //fields: [{ key: 'name', sortable: true}, 'address', 'postalCode', 'local', 'deleteUser'],
       link: '',
       counter: 0,
@@ -207,6 +213,7 @@ export default {
     },
 
     getUsersOffsetDelta: function(offset,delta){
+      this.auxCurrent=offset
       var self = this
       const url = 'http://localhost:3000/users/offset/'+(offset-1)+'/delta/'+delta
       console.log('url showOffsetDelta: '+url);
