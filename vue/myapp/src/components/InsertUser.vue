@@ -17,31 +17,45 @@
             <div class="row">
               <div class="col">
                 <b-form-group id="input-group-2" label="Nome:" label-for="input-2">
-                  <b-form-input id="name" v-model="name" required name="name" placeholder="Enter name"></b-form-input>
+                  <b-form-input id="name" v-model="name" required name="name" placeholder="Nome"></b-form-input>
                 </b-form-group>
               </div>
               <div class="col">
                 <b-form-group id="input-group-2" label="Telefone:" label-for="input-2">
-                  <b-form-input id="phoneNumber" v-model="phoneNumber" required name="phoneNumber" type="number" placeholder="Enter phone number"></b-form-input>
+                  <b-form-input id="phoneNumber" v-model="phoneNumber" required name="phoneNumber" type="number" placeholder="Telefone"></b-form-input>
                 </b-form-group>
               </div>
             </div>
 
             <b-form-group id="input-group-2" label="Morada:" label-for="input-2">
-              <b-form-input id="address" v-model="address" required name="address" placeholder="Enter address"></b-form-input>
+              <b-form-input id="address" v-model="address" required name="address" placeholder="Morada"></b-form-input>
             </b-form-group>
 
             <div class="row">
               <div class="col">
                 <b-form-group id="input-group-2" label="Local:" label-for="input-2">
-                  <b-form-input id="local" v-model="local" required name="local" placeholder="Enter local"></b-form-input>
+                  <b-form-input id="local" v-model="local" required name="local" placeholder="Local"></b-form-input>
                 </b-form-group>
               </div>
 
               <div class="col">
                 <b-form-group id="input-group-2" label="Código Postal:" label-for="input-2">
-                  <b-form-input id="postalCode" v-model="postalCode" required name="postalCode" placeholder="Enter postal code"></b-form-input>
+                  <b-form-input id="postalCode" v-model="postalCode" required name="postalCode" placeholder="Código Postal"></b-form-input>
                 </b-form-group>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <b-form-group id="input-group-2" label="Site:" label-for="input-2">
+                  <b-form-input id="link" v-model="link" required name="link" placeholder="Site"></b-form-input>
+                </b-form-group>
+              </div>
+
+              <div class="col">
+                <!--<b-form-group id="input-group-2" label="Imagem:" label-for="input-2">
+                  <b-form-input id="image" v-model="postalCode" required name="image" placeholder="Imagem"></b-form-input>
+                </b-form-group>-->
               </div>
             </div>
 
@@ -53,6 +67,7 @@
         </div>
       </fieldset>
     </div>
+
     <div style="background:transparent !important" class="jumbotron">
       <fieldset class="border border-dark">
         <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Empresas</legend>
@@ -77,19 +92,19 @@
               </th>
             </tr>
           </thead>
-          <tr id="my-table" v-for="user in users" >
+          <tr id="my-table" v-for="user in users">
             <td>{{ user.name }}</td>
             <!--<td>{{ user.phoneNumber }}</td> -->
             <td>{{ user.address }}</td>
             <td>{{ user.postalCode }}</td>
             <td>{{ user.local }}</td>
             <!--<td> <a href="#">Edit</a> </td>  lINK, ou outra coisa para uma função, que me encaminha com um pedido PUT e o id -->
-            <td> <button id="btn" class="" v-on:click="deleteUser(user.id)">Delete</button> </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
+            <td><button id="btn" class="" v-on:click="deleteUser(user.id);" onClick="window.location.reload();">Delete</button> </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
           </tr>
         </table>
 
         <div class="container">
-          <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((auxCurrent-1),3);">
+          <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((currentPage-1),3);">
                 Anterior
           </button>
           <div class="container" v-for="i in Math.ceil(len/3)">
@@ -100,7 +115,7 @@
               </button>
             <!--</ul>-->
           </div>
-          <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((auxCurrent+1),3);">
+          <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((currentPage+1),3);" >
                 Próxima
           </button>
         </div>
@@ -124,7 +139,7 @@ export default {
   name: 'course-list-row',
   mounted() {
     this.getUsers()
-    this.getUsersOffsetDelta(this.currentPage,this.perPage)
+    this.getUsersOffsetDeltaBegin(this.currentPage,this.perPage)
     console.log('Component mounted.')
   },
 
@@ -137,8 +152,7 @@ export default {
       local: '',
       perPage: 3,
       currentPage: 1,
-      auxCurrent: 2,
-      fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],   //fields: [{ key: 'name', sortable: true}, 'address', 'postalCode', 'local', 'deleteUser'],
+      //fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],  
       link: '',
       counter: 0,
       len: 0,
@@ -186,12 +200,10 @@ export default {
         this.errors.push(e)
       })
     },
-
+    
     //get users to populate the table
     getUsers: function() {
       var self = this
-      /*var offset= of-1
-      const url = 'http://localhost:3000/users/offset'+offset+'/delta/3'*/   //Com offset
       const url = 'http://localhost:3000/users'
       axios.get(url, {
         dataType: 'json',
@@ -213,7 +225,32 @@ export default {
     },
 
     getUsersOffsetDelta: function(offset,delta){
-      this.auxCurrent=offset
+      console.log('OFFSET: '+offset);
+      if(offset<=(Math.ceil(this.allUsers.length/3)) && offset>0 || offset==currentPage){
+        this.currentPage=offset
+      }
+      var self = this
+      const url = 'http://localhost:3000/users/offset/'+(offset-1)+'/delta/'+delta
+      console.log('url showOffsetDelta: '+url);
+      axios.get(url, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
+      })
+      .then(function(response) {
+        console.log(JSON.stringify(response.data))
+        self.users = response.data
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+    },
+
+    getUsersOffsetDeltaBegin: function(offset,delta){
       var self = this
       const url = 'http://localhost:3000/users/offset/'+(offset-1)+'/delta/'+delta
       console.log('url showOffsetDelta: '+url);
