@@ -104,7 +104,7 @@
             <!--<td> <a href="#">Edit</a> </td>  lINK, ou outra coisa para uma função, que me encaminha com um pedido PUT e o id -->
             
             <td>
-              <button id="btn" v-on:click="saveUser(user); $bvModal.show('bv-modal-example')">Editar {{user.name}}</button>
+              <button id="btn" v-on:click="saveUser(user); $bvModal.show('bv-modal-example')">Editar</button>
               <b-modal id="bv-modal-example" hide-footer>
                 <template v-slot:modal-title>
                   A Editar {{userForm.name}} <!-- Se usar só {{user.name}} ele vai buscar o ultimo da tabela -->
@@ -130,7 +130,7 @@
             </td>
 
             <td>
-              <button id="btn" v-on:click="deleteUser(user.id);" onClick="window.location.reload();">Apagar {{user.name}}</button>
+              <button id="btn" v-on:click="deleteUser(user.id);" onClick="window.location.reload();">Apagar</button>
             </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
           </tr>
         </table>
