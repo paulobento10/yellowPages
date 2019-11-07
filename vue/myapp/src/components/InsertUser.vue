@@ -62,7 +62,7 @@
             <b-button type="reset" variant="danger" class="btn-lg" style="float: right">Reset</b-button>
             <b-button type="submit" variant="primary" class="btn-lg" style="float: right">Criar</b-button>
 
-          </b-form> <!-- </b-form> -->
+          </b-form>
           <p><br><br></p>
         </div>
       </fieldset>
@@ -70,7 +70,7 @@
 
     <div style="background:transparent !important" class="jumbotron">
       <fieldset class="border border-dark">
-        <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Empresas</legend>
+        <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Editar/Apagar</legend>
 
         <table id="my-table" class="table table-bordered table-striped table-sm" border style="width:100%">
           <thead>
@@ -88,6 +88,9 @@
                 Local
               </th>
               <th>
+                Editar
+              </th>
+              <th>
                 Apagar
               </th>
             </tr>
@@ -99,7 +102,36 @@
             <td>{{ user.postalCode }}</td>
             <td>{{ user.local }}</td>
             <!--<td> <a href="#">Edit</a> </td>  lINK, ou outra coisa para uma função, que me encaminha com um pedido PUT e o id -->
-            <td><button id="btn" class="" v-on:click="deleteUser(user.id);" onClick="window.location.reload();">Delete</button> </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
+            
+            <td>
+              <button id="btn" v-on:click="saveUser(user); $bvModal.show('bv-modal-example')">Editar {{user.name}}</button>
+              <b-modal id="bv-modal-example" hide-footer>
+                <template v-slot:modal-title>
+                  A Editar {{userForm.name}} <!-- Se usar só {{user.name}} ele vai buscar o ultimo da tabela -->
+                </template>
+                <div class="d-block text-center">
+                  <b-form form id="app" @submit="putPut" method="putPut">
+                    <div class="col">
+                      <b-form-group id="fieldset-horizontal" label-cols-sm="4" label-cols-lg="3" label="Nome:" label-for="input-horizontal"> 
+                        <b-form-input id="name" v-model="name" required name="name" placeholder="Nome"></b-form-input>
+                      </b-form-group>
+                    </div>
+                    <div class="col">
+                      <b-form-group id="fieldset-horizontal" label-cols-sm="4" label-cols-lg="3" label="Morada:" label-for="input-horizontal">
+                        <b-form-input id="address" v-model="address" required name="address" type="address" placeholder="Morada"></b-form-input>
+                      </b-form-group>
+                    </div>
+
+                    <b-button type="submit" variant="primary" class="btn-lg" style="float: right" @click="$bvModal.hide('bv-modal-example')">Criar</b-button>
+                    <b-button class="btn-lg" style="float: right" @click="$bvModal.hide('bv-modal-example')">Sair</b-button>
+                  </b-form>
+                </div>
+              </b-modal>
+            </td>
+
+            <td>
+              <button id="btn" v-on:click="deleteUser(user.id);" onClick="window.location.reload();">Apagar {{user.name}}</button>
+            </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
           </tr>
         </table>
 
@@ -158,6 +190,7 @@ export default {
       len: 0,
       errors: [],
       users: [],
+      userForm:null,
       allUsers: []
     }
   },
@@ -169,6 +202,32 @@ export default {
   },
 
   methods: {
+    /*putPut(e)
+    {
+      e.preventDefault();
+      let self = this;
+
+      axios.put('http://localhost:3000/users/editForm/'+userForm.id, {
+        name: this.name,
+        address: this.address,
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }, )
+      .then(function(response) { //response => {}
+        //console.log(this.name);
+        console.log(response);
+
+        const status = JSON.parse(response.status);
+        if (status == '201') {
+          self.$router.push('show');
+        }
+      })
+      .catch(e => {
+        this.errors.push(e)
+      })
+    }, */
     // Pushes posts to the server when called.
     postPost(e) {
       e.preventDefault();
@@ -286,6 +345,9 @@ export default {
         }
       });
     },
+    saveUser(user){
+      this.userForm=user;
+    }
 
   }
 }
