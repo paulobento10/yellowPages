@@ -7,4 +7,5 @@ Rails.application.routes.draw do
   get 'users/delta/:delta', to:'users#showDelta'
   get 'users/offset/:offset/delta/:delta', to:'users#showOffsetDelta'
   patch 'users/updateCounter/:id', to: 'users#updateCounter'
+  patch 'users/editForm/:id', to: 'users#editForm'
 end

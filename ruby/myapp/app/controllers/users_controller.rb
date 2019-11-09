@@ -80,6 +80,13 @@ class UsersController < ApplicationController
     #render json: @user
   end
 
+  # PATCH/PUT /users/editForm/1
+  def editForm
+    @user = User.find(params[:id])
+    @user.update(editForm_params)
+    render json: @user
+  end
+
   # DELETE /users/1
   def destroy
     @user.destroy
@@ -94,5 +101,9 @@ class UsersController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def user_params
       params.permit(:name, :phoneNumber, :address, :postalCode, :local, :link, :counter) #.require(:user)
+    end
+
+    def editForm_params
+      params.permit(:name, :address)
     end
 end

@@ -110,15 +110,15 @@
                   A Editar {{userForm.name}} <!-- Se usar só {{user.name}} ele vai buscar o ultimo da tabela -->
                 </template>
                 <div class="d-block text-center">
-                  <b-form form id="app" @submit="putPut" method="putPut">
+                  <b-form form id="app" @submit="patchNameAddress" method="patchNameAddress">
                     <div class="col">
                       <b-form-group id="fieldset-horizontal" label-cols-sm="4" label-cols-lg="3" label="Nome:" label-for="input-horizontal"> 
-                        <b-form-input id="name" v-model="name" required name="name" placeholder="Nome"></b-form-input>
+                        <b-form-input id="nameEdit" v-model="nameEdit" required name="nameEdit" placeholder="Nome"></b-form-input>
                       </b-form-group>
                     </div>
                     <div class="col">
                       <b-form-group id="fieldset-horizontal" label-cols-sm="4" label-cols-lg="3" label="Morada:" label-for="input-horizontal">
-                        <b-form-input id="address" v-model="address" required name="address" type="address" placeholder="Morada"></b-form-input>
+                        <b-form-input id="addressEdit" v-model="addressEdit" required name="addressEdit" placeholder="Morada"></b-form-input>
                       </b-form-group>
                     </div>
 
@@ -188,10 +188,12 @@ export default {
       link: '',
       counter: 0,
       len: 0,
+      nameEdit: '',
+      addressEdit: '',
       errors: [],
       users: [],
       userForm:null,
-      allUsers: []
+      allUsers: [],
     }
   },
 
@@ -202,14 +204,16 @@ export default {
   },
 
   methods: {
-    /*putPut(e)
+    patchNameAddress(e)
     {
+      console.log('userID:'+this.userForm.id);
+      
       e.preventDefault();
       let self = this;
 
-      axios.put('http://localhost:3000/users/editForm/'+userForm.id, {
-        name: this.name,
-        address: this.address,
+      axios.patch('http://localhost:3000/users/editForm/'+this.userForm.id, { 
+        name: this.nameEdit,
+        address: this.addressEdit,
       }, {
         headers: {
           'Content-Type': 'application/json'
@@ -218,7 +222,6 @@ export default {
       .then(function(response) { //response => {}
         //console.log(this.name);
         console.log(response);
-
         const status = JSON.parse(response.status);
         if (status == '201') {
           self.$router.push('show');
@@ -227,7 +230,7 @@ export default {
       .catch(e => {
         this.errors.push(e)
       })
-    }, */
+    },
     // Pushes posts to the server when called.
     postPost(e) {
       e.preventDefault();
@@ -346,7 +349,10 @@ export default {
       });
     },
     saveUser(user){
-      this.userForm=user;
+      this.currentId=user.id;
+      this.userForm=user
+      console.log(this.userForm);
+      
     }
 
   }
