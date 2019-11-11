@@ -43,6 +43,12 @@ class UsersController < ApplicationController
     @user = User.offset(offset).limit(params[:delta])
     render json: @user
   end
+  
+  #GET Users by most searched
+  def showMostSearched
+    @user = User.order('counter DESC').limit(params[:limit])
+    render json: @user
+  end
 
   # POST /users
   def create
