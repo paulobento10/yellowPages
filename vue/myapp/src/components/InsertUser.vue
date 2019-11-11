@@ -122,7 +122,7 @@
                       </b-form-group>
                     </div>
 
-                    <b-button type="submit" variant="primary" class="btn-lg" style="float: right" @click="$bvModal.hide('bv-modal-example')" onClick="window.location.reload();">Editar</b-button>
+                    <b-button type="submit" variant="primary" class="btn-lg" style="float: right" @click="$bvModal.hide('bv-modal-example')">Editar</b-button>
                     <b-button class="btn-lg" style="float: right" @click="$bvModal.hide('bv-modal-example')">Sair</b-button>
                   </b-form>
                 </div>
@@ -226,6 +226,7 @@ export default {
         if (status == '201') {
           self.$router.push('show');
         }
+        window.location.reload();
       })
       .catch(e => {
         this.errors.push(e)
