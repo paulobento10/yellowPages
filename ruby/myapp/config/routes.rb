@@ -6,7 +6,10 @@ Rails.application.routes.draw do
   get 'users/name/:name/local/:local', to:'users#showNameLocal'
   get 'users/delta/:delta', to:'users#showDelta'
   get 'users/offset/:offset/delta/:delta', to:'users#showOffsetDelta'
-  get 'users/limit/:limit', to:'users#showMostSearched' 
+  get 'users/limit/:limit', to:'users#showMostSearched'
+  get 'users/likeName/:likeName', to:'users#showUsersLikeName'
+  get 'users/likeLocal/:likeLocal', to:'users#showUsersLikeLocal'
+  get 'users/likeName/:likeName/likeLocal/:likeLocal', to:'users#showUsersLikeNameLocal' 
   patch 'users/updateCounter/:id', to: 'users#updateCounter'
   patch 'users/editForm/:id', to: 'users#editForm'
 end

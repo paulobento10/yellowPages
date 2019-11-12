@@ -50,6 +50,39 @@ class UsersController < ApplicationController
     render json: @user
   end
 
+  #GET Users by like name
+  def showUsersLikeName
+    @users = User.all
+    if params[:likeName].present?
+      @users = @users.where("LOWER(name) LIKE LOWER(?)","%#{params[:likeName]}%")
+    else
+      @users = User.all #isto é desnecessário
+    end
+    render json: @users
+  end
+
+  #GET Users by like local
+  def showUsersLikeLocal
+    @users = User.all
+    if params[:likeLocal].present?
+      @users = @users.where("LOWER(local) LIKE LOWER(?) ", "%#{params[:likeLocal]}%")
+    else
+      @users = User.all #isto é desnecessário
+    end
+    render json: @users
+  end
+
+  #GET Users by like name and local
+  def showUsersLikeNameLocal
+    @users = User.all
+    if params[:likeName].present? && params[:likeLocal].present?
+      @users = @users.where("LOWER(name) LIKE LOWER(?) AND LOWER(local) LIKE LOWER(?) ", "%#{params[:likeName]}%","%#{params[:likeLocal]}%")
+    else
+      @users = User.all #isto é desnecessário
+    end
+    render json: @users
+  end
+
   # POST /users
   def create
     @user = User.new(user_params)
