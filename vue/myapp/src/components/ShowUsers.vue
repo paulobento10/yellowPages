@@ -25,7 +25,7 @@
       </fieldset>
 
       <fieldset class="border border-dark">
-        <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Resultados Mais Pesquisados</legend>
+        <legend id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom:0px; margin-left:40px; font-size:20px; font-weight:bold;">Top 3 Mais Pesquisados</legend>
           <b-col align-self="center">
             <b-carousel
               id="carousel-1"
@@ -58,21 +58,38 @@
 
     <div style="background:transparent !important" class="jumbotron">
       <b-row>
-        <b-col cols="7" v-for="(user, index) in users" :key="user.id">
+        <b-col cols="7" v-for="(user, index) in users" :key="user.id" style="borderBottom:3px solid">
           <span style="font-weight: bold;">Nome/Morada/Telefone<br></span>
           <span>{{user.name}}<br></span>
           <span>{{user.address}}<br></span>
           <span>{{user.postalCode}},{{user.local}}<br></span>
-          <span>{{user.phoneNumber}}<br><br></span>
+          <span>{{user.phoneNumber}}<br></span>
+          <a v-bind:href='user.link'>{{user.link}}</a>
+          <span><br></span>
         </b-col>
-
-        <b-col cols="5">
+        <div class="container">
+        <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((currentPage-1),3);">
+              Anterior
+        </button>
+        <div class="container" v-for="i in Math.ceil(len/3)">
+          <!-- <ul class="pagination" > -->
+            <!--<li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
+            <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(parseInt(i),3);">
+              {{i}}
+            </button>
+          <!--</ul>-->
+        </div>
+        <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((currentPage+1),3);" >
+              Próxima
+        </button>
+      </div>
+      </b-row>
+      <b-col md="4" offset-md="8">
           <GmapMap
             :center="{lat:42, lng:-8}"
             :zoom="7"
             map-type-id="terrain"
-            style="width: 500px; height: 300px"
-            >
+            style="width: 500px; height: 300px">
             <GmapMarker
             :key="index"
             v-for="(m, index) in markers"
@@ -82,35 +99,12 @@
             @click="center=m.position"
             />
           </GmapMap>
-        </b-col>
-      </b-row>
+      </b-col>
     </div>
-
-  
-    
-    <!--<div  style="float:right;">
-        <GmapMap
-        :center="{lat:42, lng:-8}"
-        :zoom="7"
-        map-type-id="terrain"
-        style="width: 500px; height: 300px"
-        >
-        <GmapMarker
-        :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        :clickable="true"
-        :draggable="true"
-        @click="center=m.position"
-        />
-      </GmapMap>
-    </div>-->
-
-   
   </div>
 </template>
-<script>
 
+<script>
 //This works!!! - DO NOT DELETE
 /*const axios = require('axios');
 var user;
@@ -140,10 +134,15 @@ export default {
   mounted() {
     console.log('Component mounted.')
     this.created()
-    //this.getMostSearchedUsers   //chamar função para preencher o array "mostSearchedUsers"
+    this.getMostSearchedUsers()
+    this.getUsersOffsetDeltaBegin(this.currentPage,this.perPage)
   },
   data() {
     return {
+      perPage: 3,
+      currentPage: 1,
+      len: 0,
+      allUsers: [],
       users: [],
       mostSearchedUsers: [],
       errors: [],
@@ -151,15 +150,27 @@ export default {
   },
   methods:{
     created(){
-      axios.get('http://localhost:3000/users')
-      .then(response => {
-        this.users = response.data
-        this.mostSearchedUsers = response.data //Só para testar
+      var self = this
+      const url = 'http://localhost:3000/users'
+      axios.get(url, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
       })
-      .catch(e => {
-        this.errors.push(e)
+      .then(function(response) {
+        console.log(JSON.stringify(response.data))
+        self.allUsers = response.data
+        self.len = self.allUsers.length;
+      })
+      .catch(function(error) {
+        console.log(error)
       })
     },
+
     getUserNameLocal(name,local){
       var url = 'http://localhost:3000/users/';
       if(name && local){
@@ -173,6 +184,7 @@ export default {
       axios.get(url)
       .then(response => {
         this.users = response.data
+        this.len = this.users.length
       })
       .catch(e => {
         this.errors.push(e)
@@ -186,10 +198,75 @@ export default {
       });
     },
 
-    getMostSearchedUsers(){
-      //depois de fazer esta função -> eliminar linha 157
-    }
+    getUsersOffsetDelta: function(offset,delta){
+      console.log('OFFSET: '+offset);
+      if(offset<=(Math.ceil(this.allUsers.length/3)) && offset>0 || offset==currentPage){
+        this.currentPage=offset
+      }
+      var self = this
+      const url = 'http://localhost:3000/users/offset/'+(offset-1)+'/delta/'+delta
+      console.log('url showOffsetDelta: '+url);
+      axios.get(url, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
+      })
+      .then(function(response) {
+        console.log(JSON.stringify(response.data))
+        self.users = response.data
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+    },
 
+    getUsersOffsetDeltaBegin: function(offset,delta){
+      var self = this
+      const url = 'http://localhost:3000/users/offset/'+(offset-1)+'/delta/'+delta
+      console.log('url showOffsetDelta: '+url);
+      axios.get(url, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
+      })
+      .then(function(response) {
+        console.log(JSON.stringify(response.data))
+        self.users = response.data
+        //document.getElementById(offset.toString()).innerHTML = offset
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+    },
+
+    getMostSearchedUsers(){
+      var self = this
+      const url = 'http://localhost:3000/users/limit/3'
+      axios.get(url, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
+      })
+      .then(function(response) {
+        console.log(JSON.stringify(response.data))
+        self.mostSearchedUsers = response.data
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+    }
   }
 }
 </script>
