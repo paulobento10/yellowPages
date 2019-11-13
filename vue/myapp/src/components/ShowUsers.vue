@@ -200,7 +200,7 @@ export default {
 
     getUsersOffsetDelta: function(offset,delta){
       console.log('OFFSET: '+offset);
-      if(offset<=(Math.ceil(this.allUsers.length/3)) && offset>0 || offset==currentPage){
+      if(offset<=(Math.ceil(this.len/3)) && offset>0 || offset==currentPage){
         this.currentPage=offset
       }
       var self = this
