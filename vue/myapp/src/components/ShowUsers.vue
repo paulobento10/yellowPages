@@ -174,11 +174,11 @@ export default {
     getUserNameLocal(name,local){
       var url = 'http://localhost:3000/users/';
       if(name && local){
-        url = url + 'name/'+name+'/local/'+local;
+        url = url + 'likeName/'+name+'/likeLocal/'+local;
       }else if (name && !local) {
-        url = url + 'name/'+name;
+        url = url + 'likeName/'+name;
       }else if (!name && local) {
-        url = url + 'local/'+local;
+        url = url + 'likeLocal/'+local;
       }
       console.log(url);
       axios.get(url)
