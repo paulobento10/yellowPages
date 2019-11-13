@@ -18,7 +18,7 @@
               <b-form-input id="input-small" size="sm" v-model="local" placeholder="Local da Empresa"></b-form-input>
             </b-col>
             <b-col sm="3">
-              <b-button variant="outline-primary" v-on:click="getUserNameLocal(name,local); updateCounter(users);">Pesquisar</b-button>
+              <b-button variant="outline-primary" v-on:click="getUserNameLocal(name, local, currentPage, perPage); updateCounter(users);">Pesquisar</b-button>
             </b-col>
           </b-row>
         </b-container>
@@ -68,18 +68,18 @@
           <span><br></span>
         </b-col>
         <div class="container">
-        <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((currentPage-1),3);">
+        <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,(currentPage-1),perPage);">
               Anterior
         </button>
         <div class="container" v-for="i in Math.ceil(len/3)">
           <!-- <ul class="pagination" > -->
             <!--<li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
-            <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(parseInt(i),3);">
+            <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,parseInt(i),perPage);">
               {{i}}
             </button>
           <!--</ul>-->
         </div>
-        <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((currentPage+1),3);" >
+        <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,(currentPage+1),perPage);" >
               Próxima
         </button>
       </div>
@@ -142,6 +142,8 @@ export default {
       perPage: 3,
       currentPage: 1,
       len: 0,
+      auxName: '',
+      auxLocal: '',
       allUsers: [],
       users: [],
       mostSearchedUsers: [],
@@ -171,14 +173,16 @@ export default {
       })
     },
 
-    getUserNameLocal(name,local){
+    getUserNameLocal(name, local, offset, delta){
       var url = 'http://localhost:3000/users/';
       if(name && local){
-        url = url + 'likeName/'+name+'/likeLocal/'+local;
+        url = url + 'likeName/'+name+'/likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
       }else if (name && !local) {
-        url = url + 'likeName/'+name;
+        
+        url = url + 'likeName/'+name+'/offset/'+(offset-1)+'/delta/'+delta;
       }else if (!name && local) {
-        url = url + 'likeLocal/'+local;
+        
+        url = url + 'likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
       }
       console.log(url);
       axios.get(url)
@@ -198,30 +202,45 @@ export default {
       });
     },
 
-    getUsersOffsetDelta: function(offset,delta){
+    getUsersOffsetDelta: function(name, local, offset,delta){
+      var url = 'http://localhost:3000/users/';
       console.log('OFFSET: '+offset);
-      if(offset<=(Math.ceil(this.len/3)) && offset>0 || offset==currentPage){
+      if(offset<=(Math.ceil(this.users.length/3)) && offset>0 || offset==currentPage){
         this.currentPage=offset
       }
-      var self = this
-      const url = 'http://localhost:3000/users/offset/'+(offset-1)+'/delta/'+delta
-      console.log('url showOffsetDelta: '+url);
+      if(name && local){
+        var self = this
+        url = url + 'likeName/'+name+'/likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
+        console.log('url showOffsetDelta: '+url);
+      }else if (name && !local) {
+        var self = this
+        url = url + 'likeName/'+name+'/offset/'+(offset-1)+'/delta/'+delta;
+        console.log('url showOffsetDelta: '+url);
+      }else if (!name && local) {
+        var self = this
+        url = url + 'likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
+        console.log('url showOffsetDelta: '+url);
+      }else if(!name && !local) {
+        var self = this
+        url = url + '/offset/'+(offset-1)+'/delta/'+delta;
+        console.log('url showOffsetDelta: '+url);
+      }
       axios.get(url, {
-        dataType: 'json',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        mode: 'no-cors',
-        credentials: 'include'
-      })
-      .then(function(response) {
-        console.log(JSON.stringify(response.data))
-        self.users = response.data
-      })
-      .catch(function(error) {
-        console.log(error)
-      })
+          dataType: 'json',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          mode: 'no-cors',
+          credentials: 'include'
+        })
+        .then(function(response) {
+          console.log(JSON.stringify(response.data))
+          self.users = response.data
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
     },
 
     getUsersOffsetDeltaBegin: function(offset,delta){
