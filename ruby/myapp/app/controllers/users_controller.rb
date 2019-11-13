@@ -53,8 +53,8 @@ class UsersController < ApplicationController
   #GET Users by like name
   def showUsersLikeName
     @users = User.all
-    if params[:likeName].present?
-      @users = @users.where("LOWER(name) LIKE LOWER(?)","%#{params[:likeName]}%")
+    if params[:likeName].present? && params[:offset].present? && params[:delta].present?
+      @users = @users.where("LOWER(name) LIKE LOWER(?)","%#{params[:likeName]}%").offset(0).limit(params[:delta])
     else
       @users = User.all #isto é desnecessário
     end
@@ -64,8 +64,8 @@ class UsersController < ApplicationController
   #GET Users by like local
   def showUsersLikeLocal
     @users = User.all
-    if params[:likeLocal].present?
-      @users = @users.where("LOWER(local) LIKE LOWER(?) ", "%#{params[:likeLocal]}%")
+    if params[:likeLocal].present? && params[:offset].present? && params[:delta].present?
+      @users = @users.where("LOWER(local) LIKE LOWER(?)", "%#{params[:likeLocal]}%").offset(0).limit(params[:delta])
     else
       @users = User.all #isto é desnecessário
     end
@@ -75,8 +75,8 @@ class UsersController < ApplicationController
   #GET Users by like name and local
   def showUsersLikeNameLocal
     @users = User.all
-    if params[:likeName].present? && params[:likeLocal].present?
-      @users = @users.where("LOWER(name) LIKE LOWER(?) AND LOWER(local) LIKE LOWER(?) ", "%#{params[:likeName]}%","%#{params[:likeLocal]}%")
+    if params[:likeName].present? && params[:likeLocal].present? && params[:offset].present? && params[:delta].present?
+      @users = @users.where("LOWER(name) LIKE LOWER(?) AND LOWER(local) LIKE LOWER(?) ", "%#{params[:likeName]}%","%#{params[:likeLocal]}%").offset(0).limit(params[:delta])
     else
       @users = User.all #isto é desnecessário
     end
