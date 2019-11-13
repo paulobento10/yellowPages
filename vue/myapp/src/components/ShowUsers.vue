@@ -18,7 +18,7 @@
               <b-form-input id="input-small" size="sm" v-model="local" placeholder="Local da Empresa"></b-form-input>
             </b-col>
             <b-col sm="3">
-              <b-button variant="outline-primary" v-on:click="getUserNameLocal(name, local, currentPage, perPage); updateCounter(users);">Pesquisar</b-button>
+              <b-button variant="outline-primary" v-on:click="getUserNameLocal(name, local, 1, 3); updateCounter(users);">Pesquisar</b-button>
             </b-col>
           </b-row>
         </b-container>
@@ -41,15 +41,15 @@
               @sliding-end="onSlideEnd">
 
             <b-carousel-slide img-src="https://www.firstderivatives.com/wp-content/uploads/2016/02/companyProfileBanner.jpg"  caption="#1 Mais Pequisado">
-              <h1>{{ mostSearchedUsers[0].name }}</h1> <!--No lugar de users, usamos o array de mostSearchedUsers-->
+              <h1>{{ mostSearchedUsers[0].name }}</h1>
             </b-carousel-slide>
 
             <b-carousel-slide img-src="https://www.firstderivatives.com/wp-content/uploads/2016/02/companyProfileBanner.jpg" caption="#2 Mais Pequisado">
-              <h1>{{ mostSearchedUsers[1].name }}</h1> <!--No lugar de users, usamos o array de mostSearchedUsers-->
+              <h1>{{ mostSearchedUsers[1].name }}</h1>
             </b-carousel-slide>
 
             <b-carousel-slide img-src="https://www.firstderivatives.com/wp-content/uploads/2016/02/companyProfileBanner.jpg" caption="#3 Mais Pequisado">
-              <h1>{{ mostSearchedUsers[2].name }}</h1> <!--No lugar de users, usamos o array de mostSearchedUsers-->
+              <h1>{{ mostSearchedUsers[2].name }}</h1> 
             </b-carousel-slide>
           </b-carousel>
           </b-col>
@@ -132,8 +132,7 @@ import axios from 'axios';
 
 export default {
   mounted() {
-    console.log('Component mounted.')
-    this.created()
+    this.getUsers()
     this.getMostSearchedUsers()
     this.getUsersOffsetDeltaBegin(this.currentPage,this.perPage)
   },
@@ -142,8 +141,8 @@ export default {
       perPage: 3,
       currentPage: 1,
       len: 0,
-      auxName: '',
-      auxLocal: '',
+      name: '',
+      local: '',
       allUsers: [],
       users: [],
       mostSearchedUsers: [],
@@ -151,7 +150,7 @@ export default {
     }
   },
   methods:{
-    created(){
+    getUsers: function() {
       var self = this
       const url = 'http://localhost:3000/users'
       axios.get(url, {
@@ -164,9 +163,10 @@ export default {
         credentials: 'include'
       })
       .then(function(response) {
-        console.log(JSON.stringify(response.data))
+        console.log('ALL USERS: '+JSON.stringify(response.data))
         self.allUsers = response.data
         self.len = self.allUsers.length;
+        console.log('LEN ALL USERS: '+len)
       })
       .catch(function(error) {
         console.log(error)
@@ -178,17 +178,17 @@ export default {
       if(name && local){
         url = url + 'likeName/'+name+'/likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
       }else if (name && !local) {
-        
         url = url + 'likeName/'+name+'/offset/'+(offset-1)+'/delta/'+delta;
       }else if (!name && local) {
-        
         url = url + 'likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
       }
       console.log(url);
       axios.get(url)
       .then(response => {
-        this.users = response.data
-        this.len = this.users.length
+        console.log('USERS: '+JSON.stringify(response.data))
+        self.users = response.data
+        self.len = self.users.length;
+        console.log('LEN USERS: '+len)
       })
       .catch(e => {
         this.errors.push(e)
@@ -202,12 +202,17 @@ export default {
       });
     },
 
-    getUsersOffsetDelta: function(name, local, offset,delta){
+    getUsersOffsetDelta: function(name, local, offset, delta){
+      console.log('name: '+name+'/local: '+local)
       var url = 'http://localhost:3000/users/';
-      console.log('OFFSET: '+offset);
-      if(offset<=(Math.ceil(this.users.length/3)) && offset>0 || offset==currentPage){
+      if(offset<=(Math.ceil(this.len/3)) && offset>0 || offset==this.currentPage){
         this.currentPage=offset
       }
+      if(offset>(Math.ceil(this.len/3))){
+        offset=offset-1
+      }
+      console.log('OFFSET: '+offset+'Current: '+this.currentPage);
+
       if(name && local){
         var self = this
         url = url + 'likeName/'+name+'/likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
@@ -222,7 +227,7 @@ export default {
         console.log('url showOffsetDelta: '+url);
       }else if(!name && !local) {
         var self = this
-        url = url + '/offset/'+(offset-1)+'/delta/'+delta;
+        url = url + 'offset/'+(offset-1)+'/delta/'+delta;
         console.log('url showOffsetDelta: '+url);
       }
       axios.get(url, {
@@ -235,7 +240,7 @@ export default {
           credentials: 'include'
         })
         .then(function(response) {
-          console.log(JSON.stringify(response.data))
+          console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
         })
         .catch(function(error) {
