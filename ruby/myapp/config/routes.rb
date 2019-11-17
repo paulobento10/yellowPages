@@ -7,6 +7,11 @@ Rails.application.routes.draw do
   get 'users/delta/:delta', to:'users#showDelta'
   get 'users/offset/:offset/delta/:delta', to:'users#showOffsetDelta'
   get 'users/limit/:limit', to:'users#showMostSearched'
+
+  get 'users/likeName/:likeName', to:'users#showUsersLikeNameTotal'
+  get 'users/likeLocal/:likeLocal', to:'users#showUsersLikeLocalTotal'
+  get 'users/likeName/:likeName/likeLocal/:likeLocal', to:'users#showUsersLikeNameLocalTotal'
+
   get 'users/likeName/:likeName/offset/:offset/delta/:delta', to:'users#showUsersLikeName'
   get 'users/likeLocal/:likeLocal/offset/:offset/delta/:delta', to:'users#showUsersLikeLocal'
   get 'users/likeName/:likeName/likeLocal/:likeLocal/offset/:offset/delta/:delta', to:'users#showUsersLikeNameLocal' 
