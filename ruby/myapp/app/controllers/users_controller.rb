@@ -41,6 +41,7 @@ class UsersController < ApplicationController
   def showOffsetDelta
     offset = Integer(params[:offset]) * Integer(params[:delta])
     @user = User.offset(offset).limit(params[:delta])
+    @user = @user.order('name ASC')
     render json: @user
   end
   
@@ -56,6 +57,7 @@ class UsersController < ApplicationController
     @users = User.all
     if params[:likeName].present? && params[:offset].present? && params[:delta].present?
       @users = @users.where("LOWER(name) LIKE LOWER(?)","%#{params[:likeName]}%").offset(offset).limit(params[:delta])
+      @users = @users.order('name ASC')
     else
       @users = User.all #isto é desnecessário
     end
@@ -68,6 +70,7 @@ class UsersController < ApplicationController
     @users = User.all
     if params[:likeLocal].present? && params[:offset].present? && params[:delta].present?
       @users = @users.where("LOWER(local) LIKE LOWER(?)", "%#{params[:likeLocal]}%").offset(offset).limit(params[:delta])
+      @users = @users.order('name ASC')
     else
       @users = User.all #isto é desnecessário
     end
@@ -80,6 +83,7 @@ class UsersController < ApplicationController
     @users = User.all
     if params[:likeName].present? && params[:likeLocal].present? && params[:offset].present? && params[:delta].present?
       @users = @users.where("LOWER(name) LIKE LOWER(?) AND LOWER(local) LIKE LOWER(?) ", "%#{params[:likeName]}%","%#{params[:likeLocal]}%").offset(offset).limit(params[:delta])
+      @users = @users.order('name ASC')
     else
       @users = User.all #isto é desnecessário
     end
