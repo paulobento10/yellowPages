@@ -18,7 +18,7 @@
               <b-form-input id="input-small" size="sm" v-model="local" placeholder="Local da Empresa"></b-form-input>
             </b-col>
             <b-col sm="3">
-              <b-button variant="outline-primary" v-on:click="getUserNameLocal(name, local, 1, 3); updateCounter(users);">Pesquisar</b-button>
+              <b-button variant="outline-primary" v-on:click="getUsersOffsetDelta(name, local, 1, perPage);">Pesquisar</b-button>
             </b-col>
           </b-row>
         </b-container>
@@ -71,14 +71,14 @@
         <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,(currentPage-1),perPage);">
               Anterior
         </button>
-        <div class="container" v-for="i in Math.ceil(len/3)">
+        <b-col v-for="i in Math.ceil(len/3)">
           <!-- <ul class="pagination" > -->
             <!--<li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
             <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,parseInt(i),perPage);">
               {{i}}
             </button>
           <!--</ul>-->
-        </div>
+        </b-col>
         <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,(currentPage+1),perPage);" >
               Próxima
         </button>
@@ -136,6 +136,7 @@ export default {
     this.getMostSearchedUsers()
     this.getUsersOffsetDeltaBegin(this.currentPage,this.perPage)
   },
+
   data() {
     return {
       perPage: 3,
@@ -149,7 +150,15 @@ export default {
       errors: [],
     }
   },
+
   methods:{
+    updateCounter(users){
+      users.forEach(element => {
+        var url = 'http://localhost:3000/users/updateCounter/'+element.id;
+        axios.patch(url)
+      });
+    },
+
     getUsers: function() {
       var self = this
       const url = 'http://localhost:3000/users'
@@ -166,71 +175,48 @@ export default {
         console.log('ALL USERS: '+JSON.stringify(response.data))
         self.allUsers = response.data
         self.len = self.allUsers.length;
-        console.log('LEN ALL USERS: '+len)
       })
       .catch(function(error) {
         console.log(error)
       })
     },
 
-    getUserNameLocal(name, local, offset, delta){
-      var url = 'http://localhost:3000/users/';
-      if(name && local){
-        url = url + 'likeName/'+name+'/likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
-      }else if (name && !local) {
-        url = url + 'likeName/'+name+'/offset/'+(offset-1)+'/delta/'+delta;
-      }else if (!name && local) {
-        url = url + 'likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
-      }
-      console.log(url);
-      axios.get(url)
-      .then(response => {
-        console.log('USERS: '+JSON.stringify(response.data))
-        self.users = response.data
-        self.len = self.users.length;
-        console.log('LEN USERS: '+len)
+    getUsersLength(url){
+      var self = this
+      axios.get(url, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
       })
-      .catch(e => {
-        this.errors.push(e)
-      });
-    },
-
-    updateCounter(users){
-      users.forEach(element => {
-        var url = 'http://localhost:3000/users/updateCounter/'+element.id;
-        axios.patch(url)
-      });
+      .then(function(response) {
+        self.len = response.data
+        console.log('LEN: '+self.len)
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
     },
 
     getUsersOffsetDelta: function(name, local, offset, delta){
-      console.log('name: '+name+'/local: '+local)
+      var self = this
+      console.log('name: '+name+' /local: '+local+' /len: '+self.len)
       var url = 'http://localhost:3000/users/';
-      if(offset<=(Math.ceil(this.len/3)) && offset>0 || offset==this.currentPage){
-        this.currentPage=offset
+      if(offset<=(Math.ceil(self.len/3)) && offset>0 || offset==self.currentPage){
+        self.currentPage=offset
       }
-      if(offset>(Math.ceil(this.len/3))){
+      if(offset>(Math.ceil(self.len/3))){
         offset=offset-1
       }
-      console.log('OFFSET: '+offset+'Current: '+this.currentPage);
+      console.log('OFFSET: '+offset+'Current: '+self.currentPage+'Delta:'+delta);
 
       if(name && local){
-        var self = this
         url = url + 'likeName/'+name+'/likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
         console.log('url showOffsetDelta: '+url);
-      }else if (name && !local) {
-        var self = this
-        url = url + 'likeName/'+name+'/offset/'+(offset-1)+'/delta/'+delta;
-        console.log('url showOffsetDelta: '+url);
-      }else if (!name && local) {
-        var self = this
-        url = url + 'likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
-        console.log('url showOffsetDelta: '+url);
-      }else if(!name && !local) {
-        var self = this
-        url = url + 'offset/'+(offset-1)+'/delta/'+delta;
-        console.log('url showOffsetDelta: '+url);
-      }
-      axios.get(url, {
+        axios.get(url, {
           dataType: 'json',
           headers: {
             'Accept': 'application/json',
@@ -242,10 +228,81 @@ export default {
         .then(function(response) {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
+          var urlSize = 'http://localhost:3000/users/likeName/'+name+'/likeLocal/'+local
+          self.getUsersLength(urlSize)
+          self.updateCounter(self.users);
+        self.updateTable();
         })
         .catch(function(error) {
           console.log(error)
         })
+      }else if (name && !local) {
+        url = url + 'likeName/'+name+'/offset/'+(offset-1)+'/delta/'+delta;
+        console.log('url showOffsetDelta: '+url);
+        axios.get(url, {
+          dataType: 'json',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          mode: 'no-cors',
+          credentials: 'include'
+        })
+        .then(function(response) {
+          console.log('Search:'+JSON.stringify(response.data))
+          self.users = response.data
+          var urlSize = 'http://localhost:3000/users/likeName/'+name
+          self.getUsersLength(urlSize)
+          self.updateCounter(self.users);
+        self.updateTable();
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+      }else if (!name && local) {
+        url = url + 'likeLocal/'+local+'/offset/'+(offset-1)+'/delta/'+delta;
+        console.log('url showOffsetDelta: '+url);
+        axios.get(url, {
+          dataType: 'json',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          mode: 'no-cors',
+          credentials: 'include'
+        })
+        .then(function(response) {
+          console.log('Search:'+JSON.stringify(response.data))
+          self.users = response.data
+          var urlSize = 'http://localhost:3000/users/likeLocal/'+local
+          self.getUsersLength(urlSize)
+          self.updateCounter(self.users);
+        self.updateTable();
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+      }else if(!name && !local) {
+        url = url + 'offset/'+(offset-1)+'/delta/'+delta;
+        console.log('url showOffsetDelta: '+url);
+        axios.get(url, {
+          dataType: 'json',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          mode: 'no-cors',
+          credentials: 'include'
+        })
+        .then(function(response) {
+          console.log('Search:'+JSON.stringify(response.data))
+          self.users = response.data
+          self.updateTable();
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+      }
     },
 
     getUsersOffsetDeltaBegin: function(offset,delta){
