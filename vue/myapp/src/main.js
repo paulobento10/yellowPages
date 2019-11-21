@@ -17,7 +17,12 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import * as VueGoogleMaps from 'vue2-google-maps'
-
+import YmapPlugin from 'vue-yandex-maps'
+const settings = {
+  lang: 'uk_UA',
+  coordorder: 'latlong',
+};
+Vue.use(YmapPlugin, settings)
 
 Vue.config.productionTip = false;
 
@@ -49,6 +54,8 @@ Vue.use(VueGoogleMaps, {
 })
 
 const router = new VueRouter({routes});
+
+
 
 new Vue({
   el: '#app',

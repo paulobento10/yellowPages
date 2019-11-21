@@ -18,7 +18,7 @@
               <b-form-input id="input-small" size="sm" v-model="local" placeholder="Local da Empresa"></b-form-input>
             </b-col>
             <b-col sm="3">
-              <b-button variant="outline-primary" v-on:click="getUsersOffsetDelta(name, local, 1, perPage);">Pesquisar</b-button>
+              <b-button pill v-on:click="getUsersOffsetDelta(name, local, 1, perPage);">Pesquisar</b-button>
             </b-col>
           </b-row>
         </b-container>
@@ -62,7 +62,7 @@
           <span style="font-weight: bold;">Nome/Morada/Telefone<br></span>
           <span>{{user.name}}<br></span>
           <span>{{user.address}}<br></span>
-          <span>{{user.postalCode}},{{user.local}}<br></span>
+          <span>{{user.postalCode}}, {{user.local}}<br></span>
           <span>{{user.phoneNumber}}<br></span>
           <a v-bind:href='user.link'>{{user.link}}</a>
           <span><br></span>
@@ -83,23 +83,34 @@
               Próxima
         </button>
       </div>
-      </b-row>
-      <b-col md="4" offset-md="8">
-          <GmapMap
-            :center="{lat:42, lng:-8}"
-            :zoom="7"
-            map-type-id="terrain"
-            style="width: 500px; height: 300px">
-            <GmapMarker
-            :key="index"
-            v-for="(m, index) in markers"
-            :position="m.position"
-            :clickable="true"
-            :draggable="true"
-            @click="center=m.position"
-            />
-          </GmapMap>
+      
+      <b-col md="2" offset-md="7">
+        <yandex-map 
+          :coords="[41.1579438, -8.6291053]"
+          zoom="10"
+          style="width: 600px; height: 600px;"
+          :cluster-options="{
+            1: {clusterDisableClickZoom: false}
+          }"
+          :controls="['trafficControl']"
+          :placemarks="placemarks" 
+          map-type="hybrid"
+          @map-was-initialized="initHandler"
+        >
+             <!--Com erros! (Ao mudar de página, não aparecem mais markers)-->
+            <ymap-marker 
+              marker-type="placemark"
+              :coords="[users[0].address, users[0].local]"
+              hint-content="Hint content 1"
+              :balloon="{header:users[0].name, body:users[0].phoneNumber}"
+              :icon="{color: 'green', glyph: 'Pocket'}"
+              cluster-name="1"
+            >
+            </ymap-marker>
+        </yandex-map>
+        {{this.lat1}}
       </b-col>
+      </b-row>
     </div>
   </div>
 </template>
@@ -148,6 +159,15 @@ export default {
       users: [],
       mostSearchedUsers: [],
       errors: [],
+      placemarks: [
+        {
+          coords: [90, 0],
+          properties: {}, // define properties here
+          options: {}, // define options here
+          clusterName: "1",
+          callbacks: { click: function() {} }
+        }
+      ]
     }
   },
 
@@ -231,7 +251,7 @@ export default {
           var urlSize = 'http://localhost:3000/users/likeName/'+name+'/likeLocal/'+local
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
-        self.updateTable();
+        //self.updateTable();
         })
         .catch(function(error) {
           console.log(error)
@@ -254,7 +274,7 @@ export default {
           var urlSize = 'http://localhost:3000/users/likeName/'+name
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
-        self.updateTable();
+        //self.updateTable();
         })
         .catch(function(error) {
           console.log(error)
@@ -277,7 +297,7 @@ export default {
           var urlSize = 'http://localhost:3000/users/likeLocal/'+local
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
-        self.updateTable();
+        //self.updateTable();
         })
         .catch(function(error) {
           console.log(error)
@@ -297,7 +317,7 @@ export default {
         .then(function(response) {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
-          self.updateTable();
+          //self.updateTable();
         })
         .catch(function(error) {
           console.log(error)

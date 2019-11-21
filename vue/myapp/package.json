@@ -12,8 +12,14 @@
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.4",
     "core-js": "^2.6.5",
+    "geocodio": "^2.0.0",
+    "jquery": "^3.4.1",
+    "mapbox-gl": "^1.5.0",
+    "mapbox-gl-vue": "^2.0.3",
     "vue": "^2.6.10",
+    "vue-mapbox": "^0.4.1",
     "vue-router": "^3.1.3",
+    "vue-yandex-maps": "^0.9.0",
     "vue2-google-maps": "^0.10.7"
   },
   "devDependencies": {
