@@ -100,7 +100,7 @@
              <!--Com erros! (Ao mudar de página, não aparecem mais markers)-->
             <ymap-marker 
               marker-type="placemark"
-              :coords="[users[0].latitude, users[0].longitude]"
+              :coords="[latitude1, longitude1]"
               hint-content="Empresa 1"
               
               :icon="{color: 'green', glyph: 'Pocket'}"
@@ -109,7 +109,7 @@
             </ymap-marker>
             <ymap-marker
               marker-type="placemark"
-              :coords="[users[1].latitude, users[1].longitude]"
+              :coords="[latitude2, longitude2]"
               hint-content="Empresa 2"
               
               :icon="{color: 'green', glyph: 'Pocket'}"
@@ -118,7 +118,7 @@
             </ymap-marker>
             <ymap-marker 
               marker-type="placemark"
-              :coords="[users[2].latitude, users[2].longitude]"
+              :coords="[latitude3, longitude3]"
               hint-content="Empresa 3"
               
               :icon="{color: 'green', glyph: 'Pocket'}"
@@ -172,8 +172,12 @@ export default {
       len: 0,
       name: '',
       local: '',
-      //latitude: 0, 
-      //longitude: 0,
+      latitude1: 90, 
+      longitude1: 0,
+      latitude2: 90, 
+      longitude2: 0,
+      latitude3: 90, 
+      longitude3: 0,
       allUsers: [],
       users: [],
       mostSearchedUsers: [],
@@ -191,6 +195,34 @@ export default {
   },
 
   methods:{
+    getCoords: function() {
+      if(this.users.length==1){
+        this.latitude1=this.users[0].latitude
+        this.longitude1=this.users[0].longitude
+        this.latitude2=90
+        this.longitude2=0
+        this.latitude3=90
+        this.longitude3=0
+      }
+      else if(this.users.length==2){
+        this.latitude1=this.users[0].latitude
+        this.longitude1=this.users[0].longitude
+        this.latitude2=this.users[1].latitude
+        this.longitude2=this.users[1].longitude
+        this.latitude3=90
+        this.longitude3=0
+      }
+      else if(this.users.length==3){
+        console.log('lat: '+this.users[0].latitude+' /lon: '+this.users[0].longitude)
+        this.latitude1=this.users[0].latitude
+        this.longitude1=this.users[0].longitude
+        this.latitude2=this.users[1].latitude
+        this.longitude2=this.users[1].longitude
+        this.latitude3=this.users[2].latitude
+        this.longitude3=this.users[2].longitude
+      }
+    },
+
     updateCounter(users){
       users.forEach(element => {
         var url = 'http://localhost:3000/users/updateCounter/'+element.id;
@@ -268,6 +300,7 @@ export default {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
           var urlSize = 'http://localhost:3000/users/likeName/'+name+'/likeLocal/'+local
+          self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
         //self.updateTable();
@@ -291,6 +324,7 @@ export default {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
           var urlSize = 'http://localhost:3000/users/likeName/'+name
+          self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
         //self.updateTable();
@@ -314,6 +348,7 @@ export default {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
           var urlSize = 'http://localhost:3000/users/likeLocal/'+local
+          self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
         //self.updateTable();
@@ -336,6 +371,7 @@ export default {
         .then(function(response) {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
+          self.getCoords()
           //self.updateTable();
         })
         .catch(function(error) {
@@ -360,6 +396,7 @@ export default {
       .then(function(response) {
         console.log(JSON.stringify(response.data))
         self.users = response.data
+        self.getCoords()
         //document.getElementById(offset.toString()).innerHTML = offset
       })
       .catch(function(error) {
