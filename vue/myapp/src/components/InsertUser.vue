@@ -182,6 +182,9 @@ export default {
       address: '',
       postalCode: '',
       local: '',
+      latitude: '',
+      longitude: '',
+      coordinates: [],
       perPage: 3,
       currentPage: 1,
       //fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],  
@@ -207,7 +210,6 @@ export default {
     patchNameAddress(e)
     {
       console.log('userID:'+this.userForm.id);
-      
       e.preventDefault();
       let self = this;
 
@@ -232,36 +234,61 @@ export default {
         this.errors.push(e)
       })
     },
+
     // Pushes posts to the server when called.
     postPost(e) {
-      e.preventDefault();
       let self = this;
-
-      axios.post('http://localhost:3000/users', {
-        name: this.name,
-        phoneNumber: this.phoneNumber,
-        address: this.address,
-        postalCode: this.postalCode,
-        local: this.local,
-        link: this.link,
-        counter: this.counter,
-      }, {
+      const urlCoord = 'https://eu1.locationiq.com/v1/search.php?key=8a5bfd04ea0bc7&q='+self.address+','+self.postalCode+','+self.local+'&format=json'
+      axios.get(urlCoord, {
+        dataType: 'json',
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'application/json'
-        }
-      }, )
-      .then(function(response) { //response => {}
-        //console.log(this.name);
-        console.log(response);
+        },
+        mode: 'no-cors',
+        credentials: 'include'
+      })
+      .then(function(response) {
+        self.coordinates = response.data
+        self.latitude = self.coordinates[0].lat;
+        self.longitude = self.coordinates[0].lon;
+        console.log('lat na função:'+self.latitude);
+        
+        e.preventDefault();
+      
+        console.log('lat:'+self.latitude);
+        axios.post('http://localhost:3000/users', {
+          name: self.name,
+          phoneNumber: self.phoneNumber,
+          address: self.address,
+          postalCode: self.postalCode,
+          local: self.local,
+          link: self.link,
+          counter: self.counter,
+          latitude: self.latitude,
+          longitude: self.longitude
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }, )
+        .then(function(response) { //response => {}
+          //console.log(this.name);
+          console.log(response);
 
-        const status = JSON.parse(response.status);
-        if (status == '201') {
-          self.$router.push('show');
-        }
+          const status = JSON.parse(response.status);
+          if (status == '201') {
+            self.$router.push('show');
+          }
+        })
+        .catch(e => {
+          this.errors.push(e)
+        })
       })
-      .catch(e => {
-        this.errors.push(e)
+      .catch(function(error) {
+        console.log(error)
       })
+      
     },
     
     //get users to populate the table

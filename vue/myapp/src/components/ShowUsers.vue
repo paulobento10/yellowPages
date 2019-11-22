@@ -100,15 +100,32 @@
              <!--Com erros! (Ao mudar de página, não aparecem mais markers)-->
             <ymap-marker 
               marker-type="placemark"
-              :coords="[users[0].address, users[0].local]"
-              hint-content="Hint content 1"
-              :balloon="{header:users[0].name, body:users[0].phoneNumber}"
+              :coords="[users[0].latitude, users[0].longitude]"
+              hint-content="Empresa 1"
+              
+              :icon="{color: 'green', glyph: 'Pocket'}"
+              cluster-name="1"
+            >
+            </ymap-marker>
+            <ymap-marker
+              marker-type="placemark"
+              :coords="[users[1].latitude, users[1].longitude]"
+              hint-content="Empresa 2"
+              
+              :icon="{color: 'green', glyph: 'Pocket'}"
+              cluster-name="1"
+            >
+            </ymap-marker>
+            <ymap-marker 
+              marker-type="placemark"
+              :coords="[users[2].latitude, users[2].longitude]"
+              hint-content="Empresa 3"
+              
               :icon="{color: 'green', glyph: 'Pocket'}"
               cluster-name="1"
             >
             </ymap-marker>
         </yandex-map>
-        {{this.lat1}}
       </b-col>
       </b-row>
     </div>
@@ -155,6 +172,8 @@ export default {
       len: 0,
       name: '',
       local: '',
+      //latitude: 0, 
+      //longitude: 0,
       allUsers: [],
       users: [],
       mostSearchedUsers: [],
