@@ -179,7 +179,7 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.permit(:name, :phoneNumber, :address, :postalCode, :local, :link, :counter) #.require(:user)
+      params.permit(:name, :phoneNumber, :address, :postalCode, :local, :link, :counter, :latitude, :longitude) #.require(:user)
     end
 
     def editForm_params
