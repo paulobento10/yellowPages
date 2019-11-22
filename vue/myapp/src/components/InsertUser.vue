@@ -252,7 +252,6 @@ export default {
         self.coordinates = response.data
         self.latitude = self.coordinates[0].lat;
         self.longitude = self.coordinates[0].lon;
-        console.log('lat na função:'+self.latitude);
         
         e.preventDefault();
       
