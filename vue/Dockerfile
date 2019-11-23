@@ -4,4 +4,4 @@ RUN npm install vue axios @vue/cli
 WORKDIR /home/vue/
 #RUN vue create myapp
 CMD npm install && npm run serve
-RUN npm install vue-yandex-maps
+RUN npm install vue-yandex-maps --save
