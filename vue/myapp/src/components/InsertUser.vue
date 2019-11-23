@@ -6,7 +6,6 @@
         <div class="mt-2 col-md-12">
 
           <b-form form id="app" @submit="postPost" method="postPost">
-            <!--<b-form id="app" @submit="postPost" method="postPost" action="http://localhost:3000/users">          action="http://localhost:3000/users"-->
             <p v-if="errors.length">
               <b>Please correct the following error(s):</b>
               <ul>
@@ -103,17 +102,14 @@
           </thead>
           <tr id="my-table" v-for="user in users">
             <td>{{ user.name }}</td>
-            <!--<td>{{ user.phoneNumber }}</td> -->
             <td>{{ user.address }}</td>
             <td>{{ user.postalCode }}</td>
             <td>{{ user.local }}</td>
-            <!--<td> <a href="#">Edit</a> </td>  lINK, ou outra coisa para uma função, que me encaminha com um pedido PUT e o id -->
-            
             <td>
               <button id="btn" v-on:click="saveUser(user); $bvModal.show('bv-modal-example')">Editar</button>
               <b-modal id="bv-modal-example" hide-footer>
                 <template v-slot:modal-title>
-                  A Editar {{userForm.name}} <!-- Se usar só {{user.name}} ele vai buscar o ultimo da tabela -->
+                  A Editar {{userForm.name}}
                 </template>
                 <div class="d-block text-center">
                   <b-form form id="app" @submit="patchNameAddress" method="patchNameAddress">
@@ -134,10 +130,9 @@
                 </div>
               </b-modal>
             </td>
-
             <td>
               <button id="btn" v-on:click="deleteUser(user.id);" onClick="window.location.reload();">Apagar</button>
-            </td> <!-- Delete "http://localhost:3000/users/"+user.id // lINK, ou outra coisa para uma função, que me encaminha com um pedido DELETE e o id -->
+            </td>
           </tr>
         </table>
 
@@ -146,23 +141,14 @@
                 Anterior
           </button>
           <div class="container" v-for="i in Math.ceil(len/3)">
-            <!-- <ul class="pagination" > -->
-              <!--<li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
-              <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(parseInt(i),3);">
+            <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(parseInt(i),3);">
                 {{i}}
               </button>
-            <!--</ul>-->
           </div>
           <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta((currentPage+1),3);" >
                 Próxima
           </button>
         </div>
-        <!--<b-pagination
-          v-model="currentPage"
-          :total-rows="rows"
-          :per-page="perPage"
-          aria-controls="my-table">
-        </b-pagination>-->
       <p><br></p>
       </fieldset>
     </div>
@@ -191,7 +177,6 @@ export default {
       link: '',
       latitude: '',
       longitude: '',
-      //fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],  
       counter: 0,
       nameEdit: '',
       addressEdit: '',
@@ -222,8 +207,7 @@ export default {
           'Content-Type': 'application/json'
         }
       }, )
-      .then(function(response) { //response => {}
-        //console.log(this.name);
+      .then(function(response) {
         console.log(response);
         const status = JSON.parse(response.status);
         if (status == '201') {
@@ -254,8 +238,7 @@ export default {
           'Content-Type': 'application/json'
         }
       }, )
-      .then(function(response) { //response => {}
-        //console.log(this.name);
+      .then(function(response) { 
         console.log(response);
         const status = JSON.parse(response.status);
         if (status == '201') {
@@ -355,17 +338,14 @@ export default {
       .then(function(response) {
         console.log(JSON.stringify(response.data))
         self.users = response.data
-        //document.getElementById(offset.toString()).innerHTML = offset
       })
       .catch(function(error) {
         console.log(error)
       })
     },
     deleteUser(userId){
-      //console.log(userId);
       let self = this
-      axios.delete('http://localhost:3000/users/'+userId).then(function(response) { //response => {}
-        //console.log(this.name);
+      axios.delete('http://localhost:3000/users/'+userId).then(function(response) {
         console.log(response);
       const status = JSON.parse(response.status);
         if (status == '204') {

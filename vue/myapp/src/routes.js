@@ -1,6 +1,3 @@
-/*const routes = [];
-
-export default routes;*/
 import Home from './components/Home.vue';
 import Register from './components/Register.vue';
 import Login from './components/Login.vue';

@@ -72,12 +72,9 @@
               Anterior
         </button>
         <b-col v-for="i in Math.ceil(len/3)">
-          <!-- <ul class="pagination" > -->
-            <!--<li style="float:left" v-for="i in Math.ceil(len/3)"><button style="float:left" id="btnPage" class="" v-on:click="getUsersOffsetDelta(parseInt(i),3)"></button> </li> <!-- <a href="#">1</a> -->
-            <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,parseInt(i),perPage);">
-              {{i}}
-            </button>
-          <!--</ul>-->
+          <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,parseInt(i),perPage);">
+            {{i}}
+          </button>
         </b-col>
         <button style="float:left; background-color: white; color: black; border: 1px solid #555555;" v-on:click="getUsersOffsetDelta(name,local,(currentPage+1),perPage);" >
               Próxima
@@ -99,7 +96,6 @@
             map-type="hybrid"
             @map-was-initialized="initHandler"
           >
-              <!--Com erros! (Ao mudar de página, não aparecem mais markers)-->
               <ymap-marker 
                 marker-type="placemark"
                 :coords="[latitude1, longitude1]"
@@ -135,29 +131,6 @@
 </template>
 
 <script>
-//This works!!! - DO NOT DELETE
-/*const axios = require('axios');
-var user;
-async function getUsers(){
-const response = await axios.get('http://localhost:3000/users');
-user = response.data;
-console.log(user)
-}
-
-getUsers();*/
-
-/*axios.get('http://localhost:3000/users')
-.then(function(response){
-console.log(response)
-})
-.catch(function (error) {
-// handle error
-console.log(error);
-})
-.finally(function () {
-// always executed
-});*/
-
 import axios from 'axios';
 
 export default {
@@ -305,7 +278,6 @@ export default {
           self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
-        //self.updateTable();
         })
         .catch(function(error) {
           console.log(error)
@@ -329,7 +301,6 @@ export default {
           self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
-        //self.updateTable();
         })
         .catch(function(error) {
           console.log(error)
@@ -353,7 +324,6 @@ export default {
           self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
-        //self.updateTable();
         })
         .catch(function(error) {
           console.log(error)
@@ -374,7 +344,6 @@ export default {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
           self.getCoords()
-          //self.updateTable();
         })
         .catch(function(error) {
           console.log(error)
@@ -399,7 +368,6 @@ export default {
         console.log(JSON.stringify(response.data))
         self.users = response.data
         self.getCoords()
-        //document.getElementById(offset.toString()).innerHTML = offset
       })
       .catch(function(error) {
         console.log(error)
