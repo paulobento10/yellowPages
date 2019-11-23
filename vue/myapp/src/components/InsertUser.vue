@@ -47,18 +47,24 @@
 
             <div class="row">
               <div class="col">
+                <b-form-group id="input-group-2" label="Latitude:" label-for="input-2">
+                  <b-form-input id="latitude" v-model="latitude" required name="latitude" placeholder="Latitude"></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col">
+                <b-form-group id="input-group-2" label="Longitude:" label-for="input-2">
+                  <b-form-input id="longitude" v-model="longitude" required name="longitude" placeholder="Longitude"></b-form-input>
+                </b-form-group>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
                 <b-form-group id="input-group-2" label="Site:" label-for="input-2">
                   <b-form-input id="link" v-model="link" required name="link" placeholder="Site"></b-form-input>
                 </b-form-group>
               </div>
-
-              <div class="col">
-                <!--<b-form-group id="input-group-2" label="Imagem:" label-for="input-2">
-                  <b-form-input id="image" v-model="postalCode" required name="image" placeholder="Imagem"></b-form-input>
-                </b-form-group>-->
-              </div>
             </div>
-
             <b-button type="reset" variant="danger" class="btn-lg" style="float: right">Reset</b-button>
             <b-button type="submit" variant="primary" class="btn-lg" style="float: right">Criar</b-button>
 
@@ -166,7 +172,6 @@
 
 <script>
 import axios from 'axios';
-
 export default {
   name: 'course-list-row',
   mounted() {
@@ -174,35 +179,34 @@ export default {
     this.getUsersOffsetDeltaBegin(this.currentPage,this.perPage)
     console.log('Component mounted.')
   },
-
   data() {
     return {
+      perPage: 3,
+      currentPage: 1,
       name: '',
       phoneNumber: '',
       address: '',
       postalCode: '',
       local: '',
-      perPage: 3,
-      currentPage: 1,
-      //fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],  
       link: '',
+      latitude: '',
+      longitude: '',
+      //fields: ['name', 'address', 'postalCode', 'local', 'deleteUser'],  
       counter: 0,
-      len: 0,
       nameEdit: '',
       addressEdit: '',
+      len: 0,
       errors: [],
       users: [],
       userForm:null,
       allUsers: [],
     }
   },
-
   computed: {
     rows() {
       return this.allUsers.length
     },
   },
-
   methods: {
     patchNameAddress(e)
     {
@@ -210,7 +214,6 @@ export default {
       
       e.preventDefault();
       let self = this;
-
       axios.patch('http://localhost:3000/users/editForm/'+this.userForm.id, { 
         name: this.nameEdit,
         address: this.addressEdit,
@@ -236,7 +239,6 @@ export default {
     postPost(e) {
       e.preventDefault();
       let self = this;
-
       axios.post('http://localhost:3000/users', {
         name: this.name,
         phoneNumber: this.phoneNumber,
@@ -245,6 +247,8 @@ export default {
         local: this.local,
         link: this.link,
         counter: this.counter,
+        latitude: this.latitude,
+        longitude: this.longitude
       }, {
         headers: {
           'Content-Type': 'application/json'
@@ -253,7 +257,6 @@ export default {
       .then(function(response) { //response => {}
         //console.log(this.name);
         console.log(response);
-
         const status = JSON.parse(response.status);
         if (status == '201') {
           self.$router.push('show');
@@ -263,6 +266,31 @@ export default {
         this.errors.push(e)
       })
     },
+
+    //Function to get coordinates from address (Not Working 100%)
+    /*getCoords: function() {
+      console.log('Getting Coords!!!');
+      let self = this;
+      const urlCoord = 'https://eu1.locationiq.com/v1/search.php?key=8a5bfd04ea0bc7&q='+self.address+','+self.postalCode+','+self.local+'&format=json'
+      axios.get(urlCoord, {
+        dataType: 'json',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'no-cors',
+        credentials: 'include'
+      })
+      .then(function(response) {
+        self.coordinates = response.data
+        self.latitude = self.coordinates[0].lat
+        self.longitude = self.coordinates[0].lon
+        console.log('latFun:'+self.latitude);
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+    },*/
     
     //get users to populate the table
     getUsers: function() {
@@ -286,7 +314,6 @@ export default {
         console.log(error)
       })
     },
-
     getUsersOffsetDelta: function(offset,delta){
       console.log('OFFSET: '+offset);
       if(offset<=(Math.ceil(this.allUsers.length/3)) && offset>0 || offset==currentPage){
@@ -312,7 +339,6 @@ export default {
         console.log(error)
       })
     },
-
     getUsersOffsetDeltaBegin: function(offset,delta){
       var self = this
       const url = 'http://localhost:3000/users/offset/'+(offset-1)+'/delta/'+delta
@@ -335,14 +361,12 @@ export default {
         console.log(error)
       })
     },
-
     deleteUser(userId){
       //console.log(userId);
       let self = this
       axios.delete('http://localhost:3000/users/'+userId).then(function(response) { //response => {}
         //console.log(this.name);
         console.log(response);
-
       const status = JSON.parse(response.status);
         if (status == '204') {
           self.$router.push('insert');
@@ -355,7 +379,6 @@ export default {
       console.log(this.userForm);
       
     }
-
   }
 }
 </script>

@@ -83,33 +83,52 @@
               Próxima
         </button>
       </div>
-      
-      <b-col md="2" offset-md="7">
-        <yandex-map 
-          :coords="[41.1579438, -8.6291053]"
-          zoom="10"
-          style="width: 600px; height: 600px;"
-          :cluster-options="{
-            1: {clusterDisableClickZoom: false}
-          }"
-          :controls="['trafficControl']"
-          :placemarks="placemarks" 
-          map-type="hybrid"
-          @map-was-initialized="initHandler"
-        >
-             <!--Com erros! (Ao mudar de página, não aparecem mais markers)-->
-            <ymap-marker 
-              marker-type="placemark"
-              :coords="[users[0].address, users[0].local]"
-              hint-content="Hint content 1"
-              :balloon="{header:users[0].name, body:users[0].phoneNumber}"
-              :icon="{color: 'green', glyph: 'Pocket'}"
-              cluster-name="1"
-            >
-            </ymap-marker>
-        </yandex-map>
-        {{this.lat1}}
-      </b-col>
+      </b-row>
+      <p><br></p>
+      <b-row class="justify-content-md-center">
+        <b-col cols="12" md="auto">
+          <yandex-map 
+            :coords="[41.1579438, -8.6291053]"
+            zoom="10"
+            style="width: 600px; height: 600px;"
+            :cluster-options="{
+              1: {clusterDisableClickZoom: false}
+            }"
+            :controls="['trafficControl']"
+            :placemarks="placemarks" 
+            map-type="hybrid"
+            @map-was-initialized="initHandler"
+          >
+              <!--Com erros! (Ao mudar de página, não aparecem mais markers)-->
+              <ymap-marker 
+                marker-type="placemark"
+                :coords="[latitude1, longitude1]"
+                hint-content="Empresa 1"
+                
+                :icon="{color: 'green', glyph: 'Pocket'}"
+                cluster-name="1"
+              >
+              </ymap-marker>
+              <ymap-marker
+                marker-type="placemark"
+                :coords="[latitude2, longitude2]"
+                hint-content="Empresa 2"
+                
+                :icon="{color: 'green', glyph: 'Pocket'}"
+                cluster-name="1"
+              >
+              </ymap-marker>
+              <ymap-marker 
+                marker-type="placemark"
+                :coords="[latitude3, longitude3]"
+                hint-content="Empresa 3"
+                
+                :icon="{color: 'green', glyph: 'Pocket'}"
+                cluster-name="1"
+              >
+              </ymap-marker>
+          </yandex-map>
+        </b-col>
       </b-row>
     </div>
   </div>
@@ -155,6 +174,12 @@ export default {
       len: 0,
       name: '',
       local: '',
+      latitude1: 90, 
+      longitude1: 0,
+      latitude2: 90, 
+      longitude2: 0,
+      latitude3: 90, 
+      longitude3: 0,
       allUsers: [],
       users: [],
       mostSearchedUsers: [],
@@ -172,6 +197,34 @@ export default {
   },
 
   methods:{
+    getCoords: function() {
+      if(this.users.length==1){
+        this.latitude1=this.users[0].latitude
+        this.longitude1=this.users[0].longitude
+        this.latitude2=90
+        this.longitude2=0
+        this.latitude3=90
+        this.longitude3=0
+      }
+      else if(this.users.length==2){
+        this.latitude1=this.users[0].latitude
+        this.longitude1=this.users[0].longitude
+        this.latitude2=this.users[1].latitude
+        this.longitude2=this.users[1].longitude
+        this.latitude3=90
+        this.longitude3=0
+      }
+      else if(this.users.length==3){
+        console.log('lat: '+this.users[0].latitude+' /lon: '+this.users[0].longitude)
+        this.latitude1=this.users[0].latitude
+        this.longitude1=this.users[0].longitude
+        this.latitude2=this.users[1].latitude
+        this.longitude2=this.users[1].longitude
+        this.latitude3=this.users[2].latitude
+        this.longitude3=this.users[2].longitude
+      }
+    },
+
     updateCounter(users){
       users.forEach(element => {
         var url = 'http://localhost:3000/users/updateCounter/'+element.id;
@@ -249,6 +302,7 @@ export default {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
           var urlSize = 'http://localhost:3000/users/likeName/'+name+'/likeLocal/'+local
+          self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
         //self.updateTable();
@@ -272,6 +326,7 @@ export default {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
           var urlSize = 'http://localhost:3000/users/likeName/'+name
+          self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
         //self.updateTable();
@@ -295,6 +350,7 @@ export default {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
           var urlSize = 'http://localhost:3000/users/likeLocal/'+local
+          self.getCoords()
           self.getUsersLength(urlSize)
           self.updateCounter(self.users);
         //self.updateTable();
@@ -317,6 +373,7 @@ export default {
         .then(function(response) {
           console.log('Search:'+JSON.stringify(response.data))
           self.users = response.data
+          self.getCoords()
           //self.updateTable();
         })
         .catch(function(error) {
@@ -341,6 +398,7 @@ export default {
       .then(function(response) {
         console.log(JSON.stringify(response.data))
         self.users = response.data
+        self.getCoords()
         //document.getElementById(offset.toString()).innerHTML = offset
       })
       .catch(function(error) {
