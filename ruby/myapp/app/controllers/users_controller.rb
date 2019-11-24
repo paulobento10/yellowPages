@@ -59,7 +59,7 @@ class UsersController < ApplicationController
       @users = @users.where("LOWER(name) LIKE LOWER(?)","%#{params[:likeName]}%").offset(offset).limit(params[:delta])
       @users = @users.order('name ASC')
     else
-      @users = User.all #isto é desnecessário
+      @users = User.all 
     end
     render json: @users
   end
@@ -72,7 +72,7 @@ class UsersController < ApplicationController
       @users = @users.where("LOWER(local) LIKE LOWER(?)", "%#{params[:likeLocal]}%").offset(offset).limit(params[:delta])
       @users = @users.order('name ASC')
     else
-      @users = User.all #isto é desnecessário
+      @users = User.all 
     end
     render json: @users
   end
@@ -85,7 +85,7 @@ class UsersController < ApplicationController
       @users = @users.where("LOWER(name) LIKE LOWER(?) AND LOWER(local) LIKE LOWER(?) ", "%#{params[:likeName]}%","%#{params[:likeLocal]}%").offset(offset).limit(params[:delta])
       @users = @users.order('name ASC')
     else
-      @users = User.all #isto é desnecessário
+      @users = User.all 
     end
     render json: @users
   end
@@ -96,7 +96,7 @@ class UsersController < ApplicationController
     if params[:likeName].present?
       @users = @users.where("LOWER(name) LIKE LOWER(?)","%#{params[:likeName]}%").count(:all)
     else
-      @users = User.all #isto é desnecessário
+      @users = User.all 
     end
     render json: @users
   end
@@ -107,7 +107,7 @@ class UsersController < ApplicationController
       if params[:likeLocal].present?
         @users = @users.where("LOWER(local) LIKE LOWER(?)","%#{params[:likeLocal]}%").count(:all)
       else
-        @users = User.all #isto é desnecessário
+        @users = User.all
       end
       render json: @users
     end
@@ -118,7 +118,7 @@ class UsersController < ApplicationController
     if params[:likeName].present? && params[:likeLocal].present?
       @users = @users.where("LOWER(name) LIKE LOWER(?) AND LOWER(local) LIKE LOWER(?) ", "%#{params[:likeName]}%","%#{params[:likeLocal]}%").count(:all)
     else
-      @users = User.all #isto é desnecessário
+      @users = User.all
     end
     render json: @users
   end
@@ -145,18 +145,12 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/counter/1
   def updateCounter
-    #if @user.update(params[:id])
-    #  render json: @user.increment(:counter,1)
-    #else
-    #  render json: @user.errors, status: :unprocessable_entity
-    #end
     if @user  = User.find(params[:id])
       @user.increment(:counter,1)
       render @user.update(user_params)
     else
       render json: @user.errors, status: :unprocessable_entity
     end
-    #render json: @user
   end
 
   # PATCH/PUT /users/editForm/1
@@ -179,7 +173,7 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.permit(:name, :phoneNumber, :address, :postalCode, :local, :link, :counter, :latitude, :longitude) #.require(:user)
+      params.permit(:name, :phoneNumber, :address, :postalCode, :local, :link, :counter, :latitude, :longitude) 
     end
 
     def editForm_params

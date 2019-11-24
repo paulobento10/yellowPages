@@ -201,6 +201,7 @@ export default {
     updateCounter(users){
       users.forEach(element => {
         var url = 'http://localhost:3000/users/updateCounter/'+element.id;
+        console.log('Counter url: '+url);
         axios.patch(url)
       });
     },
