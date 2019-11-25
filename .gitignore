@@ -21,7 +21,7 @@
 /public/packs
 /public/packs-test
 /vue/node_modules
-../../vue/myapp/package-lock.json
+#../../vue/myapp/package-lock.json
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
