@@ -40,17 +40,12 @@
               @sliding-start="onSlideStart"
               @sliding-end="onSlideEnd">
 
-            <b-carousel-slide img-src="https://www.firstderivatives.com/wp-content/uploads/2016/02/companyProfileBanner.jpg"  caption="#1 Mais Pequisado">
-              <h1>{{ mostSearchedUsers[0].name }}</h1>
+            <div v-for="(user, index) in mostSearchedUsers" :key="user.id">
+            <b-carousel-slide img-src="https://www.firstderivatives.com/wp-content/uploads/2016/02/companyProfileBanner.jpg"  caption="Mais Pesquisados">
+              <h1>{{ user.name }}</h1>
             </b-carousel-slide>
 
-            <b-carousel-slide img-src="https://www.firstderivatives.com/wp-content/uploads/2016/02/companyProfileBanner.jpg" caption="#2 Mais Pequisado">
-              <h1>{{ mostSearchedUsers[1].name }}</h1>
-            </b-carousel-slide>
-
-            <b-carousel-slide img-src="https://www.firstderivatives.com/wp-content/uploads/2016/02/companyProfileBanner.jpg" caption="#3 Mais Pequisado">
-              <h1>{{ mostSearchedUsers[2].name }}</h1> 
-            </b-carousel-slide>
+            </div>
           </b-carousel>
           </b-col>
       </fieldset>

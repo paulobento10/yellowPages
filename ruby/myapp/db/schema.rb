@@ -25,8 +25,6 @@ ActiveRecord::Schema.define(version: 2019_11_22_001937) do
     t.datetime "updated_at", null: false
     t.string "link"
     t.integer "counter"
-    t.string "image"
-    t.string "avatar"
     t.string "latitude"
     t.string "longitude"
   end
